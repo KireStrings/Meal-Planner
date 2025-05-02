@@ -29,14 +29,24 @@ def register():
     form = RegisterForm()
     if form.validate_on_submit():
         username = form.username.data
+        email = form.email.data
         password = form.password.data
 
-        user = User.query.filter_by(username=username).first()
-        if user and user.password == password:
-            # login logic here
-            return redirect(url_for('main.dashboard'))
-        else:
-            flash('Invalid username or password.')
+        # Check if username or email already exists
+        existing_user = User.query.filter(
+            (User.username == username) | (User.email == email)
+        ).first()
+        if existing_user:
+            flash('Username or email already exists.')
+            return redirect(url_for('auth.register'))
+
+        # Create new user
+        new_user = User(username=username, email=email, password=password)
+        db.session.add(new_user)
+        db.session.commit()
+
+        flash('Registration successful! Please log in.')
+        return redirect(url_for('auth.login'))
 
     return render_template('register.html', form=form)
 

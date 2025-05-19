@@ -1,5 +1,5 @@
 import os
-from flask import Flask
+from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
@@ -49,6 +49,10 @@ def create_app():
                 return content
         except FileNotFoundError:
             return f'<!-- SVG "{filename}" not found -->'
+
+    @app.context_processor
+    def inject_current_page():
+        return dict(current_page=request.endpoint)
 
     return app
 

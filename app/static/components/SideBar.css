@@ -1,0 +1,234 @@
+.sidebar {
+    width: 256px;
+    padding: 24px 16px;
+    background: white;
+    border-left: 1px solid #dde1e6;
+    border-right: 1px solid #dde1e6;
+
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.header {
+    align-self: stretch;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+.logo-title {
+    color: #697077;
+    font-size: 24px;
+    font-family: Roboto, sans-serif;
+    font-weight: 700;
+    line-height: 26.4px;
+    word-wrap: break-word;
+}
+
+.logo-subtitle {
+    color: #697077;
+    font-size: 12px;
+    font-family: Roboto, sans-serif;
+    font-weight: 400;
+    line-height: 16.8px;
+    word-wrap: break-word;
+}
+
+/* Top icons container */
+.top-icons {
+    align-self: stretch;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.icon-circle {
+    width: 48px;
+    height: 48px;
+    background: #f2f4f8;
+    border-radius: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.icon-link {
+    height: 48px;
+    padding: 16px 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+}
+
+/* Search bar */
+.search-bar {
+    align-self: stretch;
+    height: 48px;
+    padding: 12px 16px;
+    background: #f2f4f8;
+    border-bottom: 1px solid #c1c7cd;
+
+    display: inline-flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 8px;
+}
+
+.search-bar a {
+    height: 24px;
+    width: 24px;
+}
+
+.search-icon {
+    width: 1.2em;
+    height: 1.2em;
+    position: relative;
+    overflow: hidden;
+    color: #697077;
+}
+
+.search-bar input {
+    width: 100%;
+    color: #697077;
+    font-size: 16px;
+    font-family: Roboto, sans-serif;
+    font-weight: 400;
+    line-height: 22.4px;
+    word-wrap: break-word;
+    background: none;
+    border: none;
+    outline: none;
+}
+
+/* Menu container */
+.menu {
+    align-self: stretch;
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+/* Menu item base style */
+.menu-item {
+    align-self: stretch;
+    padding: 12px 8px;
+    display: inline-flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.menu-item.active {
+    background: #f2f4f8;
+    border-left: 2px solid #f2f4f8;
+    border-bottom: 1px solid #f2f4f8;
+}
+
+.menu-item:not(.active) {
+    outline: 1px solid #f2f4f8;
+    outline-offset: -1px;
+}
+
+.menu-item:not(:last-child) {
+    border-bottom: 1px solid #f2f4f8;
+}
+
+.menu-icon {
+    width: 24px;
+    height: 24px;
+    position: relative;
+    overflow: hidden;
+}
+
+.menu-text {
+    flex: 1 1 0;
+    color: #21272a;
+    font-size: 16px;
+    font-family: Roboto, sans-serif;
+    font-weight: 500;
+    line-height: 16px;
+    word-wrap: break-word;
+}
+
+/* Specific icons shapes */
+.meal-planner-icon > div {
+    width: 20px;
+    height: 19.67px;
+    position: absolute;
+    left: 2px;
+    top: 2.33px;
+    background: #21272a;
+}
+
+.saved-recipes-icon > div:nth-child(1) {
+    width: 24px;
+    height: 24px;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.saved-recipes-icon > div:nth-child(2),
+.saved-recipes-icon > div:nth-child(3) {
+    width: 14px;
+    height: 13px;
+    position: absolute;
+    outline: 2px solid #21272a;
+    outline-offset: -1px;
+}
+
+.saved-recipes-icon > div:nth-child(2) {
+    left: 7px;
+    top: 4px;
+}
+
+.saved-recipes-icon > div:nth-child(3) {
+    left: 3px;
+    top: 8px;
+}
+
+.menu-arrow {
+    width: 13.34px;
+    height: 7.67px;
+    position: absolute;
+    left: 5.4px;
+    top: 8.06px;
+    background: #21272a;
+}
+
+.ingredients-icon > div {
+    width: 23.4px;
+    height: 17.74px;
+    position: absolute;
+    left: 0.27px;
+    top: 3.16px;
+    background: #21272a;
+}
+
+.allergies-icon > div {
+    width: 20px;
+    height: 21px;
+    position: absolute;
+    left: 2px;
+    top: 1.5px;
+    background: #21272a;
+}

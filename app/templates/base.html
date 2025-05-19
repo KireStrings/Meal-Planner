@@ -14,6 +14,8 @@
     {% block head %}{% endblock %}
 </head>
 <body>
+{% include 'components/SideBar.html' %}
+
 <main class="main-content">
     {% with messages = get_flashed_messages() %}
         {% if messages %}

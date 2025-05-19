@@ -1,0 +1,47 @@
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='components/Sidebar.css') }}">
+{% endblock %}
+
+<div class="sidebar">
+    <div class="header">
+        <a class="logo" href="/">
+            <div class="logo-title">🥄 Mealano</div>
+            <div class="logo-subtitle">plan your meals</div>
+        </a>
+    </div>
+
+    <div class="top-icons">
+        <div class="icon-circle">
+            {{ icon('user') }}
+        </div>
+        <div class="icon-link">
+            {{ icon('settings') }}
+        </div>
+    </div>
+
+    <div class="search-bar">
+        <a href="/search">{{ icon('search', 'search-icon') }}</a>
+        <input type="text" placeholder="Search for...">
+    </div>
+
+    <div class="menu">
+        <div class="menu-item {{ 'active' if current_page == 'main.planner' else '' }}">
+            {{ icon('calendar') }}
+            <div class="menu-text">Meal Planner</div>
+        </div>
+        <div class="menu-item {{ 'active' if current_page == 'main.saved' else '' }}">
+            {{ icon('book') }}
+            <div class="menu-text">Saved Recipes</div>
+            {{ icon('chevron-down') }}
+        </div>
+{#        <div class="menu-item {{ 'active' if current_page == 'main.ingredients' else '' }}">#}
+{#            {{ icon('shopping-cart') }}#}
+{#            <div class="menu-text">Ingredients</div>#}
+{#            {{ icon('chevron-down') }}#}
+{#        </div>#}
+{#        <div class="menu-item {{ 'active' if current_page == 'main.allergies' else '' }}">#}
+{#            {{ icon('users') }}#}
+{#            <div class="menu-text">Allergies, Preferences</div>#}
+{#        </div>#}
+    </div>
+</div>

@@ -1,7 +1,9 @@
+import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
+from jinja2 import pass_context
 
 db = SQLAlchemy()
 migrate = Migrate()
@@ -29,6 +31,23 @@ def create_app():
     app.register_blueprint(auth)
     app.register_blueprint(main)
     app.register_blueprint(dashboard)
+
+    svg_cache = {}
+
+    @app.template_filter('include_file')
+    @pass_context
+    def include_file(context, filename):
+        if filename in svg_cache:
+            return svg_cache[filename]
+
+        path = os.path.join(app.root_path, filename)
+        try:
+            with open(path, 'r', encoding='utf-8') as f:
+                content = f.read()
+                svg_cache[filename] = content
+                return content
+        except FileNotFoundError:
+            return f'<!-- SVG "{filename}" not found -->'
 
     return app
 

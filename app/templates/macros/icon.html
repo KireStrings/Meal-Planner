@@ -1,0 +1,9 @@
+{% macro icon(name, class_name="") %}
+{#{% macro icon(name) %}#}
+    {% set path = 'static/icons/' + name + '.svg' %}
+    {% with %}
+        {% set svg = path | safe | include_file %}
+        <span class="icon {{ class_name }}">{{ svg|safe }}</span>
+{#        {{ svg|safe }}#}
+    {% endwith %}
+{% endmacro %}

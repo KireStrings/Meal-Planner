@@ -1,4 +1,5 @@
 import requests
+from flask import jsonify
 
 from .models import Recipe
 from . import db
@@ -9,6 +10,20 @@ class SpoonacularAPI:
 
     def __init__(self, api_key):
         self.api_key = api_key
+
+    def search_recipes_by_params(self, params):
+        response = requests.get("https://api.spoonacular.com/recipes/complexSearch", params=params)
+
+        print(params)
+
+        #response = requests.get("https://api.spoonacular.com/recipes/complexSearch?apiKey=0132d061f6834c90a8086d0e4556364d&number=1&addRecipeInformation=true&addRecipeNutrition=true&addRecipeInstructions=true")
+
+        if response.status_code == 200:
+            print("API Response JSON:", response.json())
+            return jsonify(response.json())
+        else:
+            print("error")
+            return jsonify({"error": "Failed to fetch data"}), 500
 
     def search_recipes(self, query, number=10):
         """Suche nach Rezepten basierend auf einer Abfrage."""

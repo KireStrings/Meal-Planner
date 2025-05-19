@@ -1,6 +1,6 @@
-from flask import Blueprint, render_template, request, jsonify
-from flask_login import login_required, current_user
-import requests
+from flask import Blueprint, render_template, request, current_app
+from flask_login import login_required
+from ..spoonacular import SpoonacularAPI
 
 dashboard = Blueprint('dashboard', __name__)
 
@@ -23,8 +23,11 @@ def generate_meal_plan():
         min_fat = data.get('minFat', 40)
         min_protein = data.get('minProtein', 90)
 
+        api_key = current_app.config['SPOONACULAR_API_KEY']
+        spoonacular = SpoonacularAPI(api_key)
+
         params = {
-            "apiKey": "0132d061f6834c90a8086d0e4556364d",
+            "apiKey": api_key,
             "number": meals,
             "addRecipeInformation": True,      # includes title, image, dish types, etc.
             "addRecipeInstructions": True,     # includes step-by-step instructions
@@ -36,18 +39,6 @@ def generate_meal_plan():
             "maxCalories": calories            # Optional but recommended for targeting
         }
 
-        response = requests.get("https://api.spoonacular.com/recipes/complexSearch", params=params)
-
-        print(params)
-     
-        #response = requests.get("https://api.spoonacular.com/recipes/complexSearch?apiKey=0132d061f6834c90a8086d0e4556364d&number=1&addRecipeInformation=true&addRecipeNutrition=true&addRecipeInstructions=true")
-
-
-        if response.status_code == 200:
-            print("API Response JSON:", response.json())
-            return jsonify(response.json())
-        else:
-            print("error")
-            return jsonify({"error": "Failed to fetch data"}), 500
+        return spoonacular.search_recipes_by_params(params)
             
 

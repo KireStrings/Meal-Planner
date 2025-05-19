@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %}Search Recipes{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='search.css') }}">
+{% endblock %}
+
+{% block content %}
+    <h1>Search Recipes</h1>
+
+    <div class="search-page">
+        <!-- Search by Query Form -->
+        <form class="search-form" method="POST">
+            <input type="text" name="query" placeholder="Enter a recipe name" value="{{ query }}"/>
+            <button class="btn" type="submit">Search</button>
+        </form>
+
+        <!-- Search by Ingredients Form -->
+        <form class="search-form" method="POST">
+            <input type="text" name="ingredients" placeholder="Enter ingredients (comma-separated)"
+                   value="{{ ingredients }}">
+            <button class="btn" type="submit">Search by Ingredients</button>
+        </form>
+
+        <div class="search-filters">
+            <select name="category">
+                <option value="">All Categories</option>
+                <option value="reports">Reports</option>
+                <option value="users">Users</option>
+            </select>
+
+            <select name="sort">
+                <option value="relevance">Sort by Relevance</option>
+                <option value="recent">Most Recent</option>
+            </select>
+        </div>
+
+        <div class="search-results">
+            {% for recipe in recipes %}
+                <a class="card" href="{{ url_for('main.recipe_details', recipe_id=recipe.id) }}">
+                    <img src="{{ recipe.image }}" alt="{{ recipe.title }}"
+                         style="max-width: 100px; max-height: 100px;">
+                    {{ recipe.title }}
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

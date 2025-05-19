@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %}{{ recipe.title }}{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='recipe_details.css') }}">
+{% endblock %}
+
+{% block content %}
+    <div class="details-page">
+        <h2 class="details-title">{{ recipe.title }}</h2>
+
+        <div class="details-img-meta">
+            <img src="{{ recipe.image }}" alt="{{ recipe.title }}" style="max-width: 300px;">
+            <div class="details-meta">
+                <div class="tags">
+                    <span class="tag">Vegan</span>
+                    <span class="tag">Gluten-Free</span>
+                    <span class="tag">Dairy-Free</span>
+                </div>
+                <p><strong>Ready in:</strong> {{ recipe.readyInMinutes }} minutes</p>
+                <p><strong>Servings:</strong> {{ recipe.servings }}</p>
+            </div>
+        </div>
+
+        <div class="details-body">
+
+
+            <p><strong>Summary:</strong> {{ recipe.summary|safe }}</p>
+            <h2>Ingredients</h2>
+            <ul>
+                {% for ingredient in recipe.extendedIngredients %}
+                    <li>{{ ingredient.original }}</li>
+                {% endfor %}
+            </ul>
+            <h2>Instructions</h2>
+            <p>{{ recipe.instructions|safe }}</p>
+        </div>
+
+        <div class="details-actions">
+            <button class="btn">Save</button>
+            {% if recipe.source_url and recipe.source_name %}
+                <a class="btn link" href="{{ recipe.source_url }}">{{ icon('external-link') }}{{ recipe.source_name }}</a>
+            {% else %}
+                <a class="btn link disabled">No Source</a>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

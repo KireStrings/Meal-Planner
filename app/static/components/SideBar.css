@@ -138,26 +138,18 @@
     color: inherit;
 }
 
+.menu-item:hover {
+    background-color: #f2f4f8;
+}
+
 .menu-item.active {
     background: #f2f4f8;
-    border-left: 2px solid #f2f4f8;
-    border-bottom: 1px solid #f2f4f8;
+    border-left: 2px solid black;
 }
 
 .menu-item:not(.active) {
     outline: 1px solid #f2f4f8;
     outline-offset: -1px;
-}
-
-.menu-item:not(:last-child) {
-    border-bottom: 1px solid #f2f4f8;
-}
-
-.menu-icon {
-    width: 24px;
-    height: 24px;
-    position: relative;
-    overflow: hidden;
 }
 
 .menu-text {

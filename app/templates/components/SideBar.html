@@ -25,10 +25,10 @@
     </div>
 
     <div class="menu">
-        <div class="menu-item {{ 'active' if current_page == 'main.planner' else '' }}">
+        <a href="/my-plan" class="menu-item {{ 'active' if current_page == 'main.my_plan' else '' }}">
             {{ icon('calendar') }}
             <div class="menu-text">Meal Planner</div>
-        </div>
+        </a>
         <div class="menu-item {{ 'active' if current_page == 'main.saved' else '' }}">
             {{ icon('book') }}
             <div class="menu-text">Saved Recipes</div>

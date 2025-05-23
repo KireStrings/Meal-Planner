@@ -135,6 +135,7 @@
     align-items: center;
     gap: 8px;
     cursor: pointer;
+    color: inherit;
 }
 
 .menu-item.active {

@@ -25,15 +25,15 @@
     </div>
 
     <div class="menu">
-        <a href="/my-plan" class="menu-item {{ 'active' if current_page == 'main.my_plan' else '' }}">
+        <a href="/my-plan" class="menu-item {{ 'active' if current_page == 'meal_plan.my_plan' else '' }}">
             {{ icon('calendar') }}
             <div class="menu-text">Meal Planner</div>
         </a>
-        <div class="menu-item {{ 'active' if current_page == 'main.saved' else '' }}">
+        <a href="/recipes" class="menu-item {{ 'active' if current_page == 'browse.recipes' else '' }}">
             {{ icon('book') }}
             <div class="menu-text">Saved Recipes</div>
             {{ icon('chevron-down') }}
-        </div>
+        </a>
 {#        <div class="menu-item {{ 'active' if current_page == 'main.ingredients' else '' }}">#}
 {#            {{ icon('shopping-cart') }}#}
 {#            <div class="menu-text">Ingredients</div>#}

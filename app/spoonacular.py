@@ -56,6 +56,25 @@ class SpoonacularAPI:
         response.raise_for_status()
         return response.json()
 
+    def get_saved_recipes(self):
+        """Hole alle Rezepte aus der Datenbank."""
+        recipes = Recipe.query.all()
+        return [
+            {
+                "id": recipe.id,
+                "title": recipe.title,
+                "readyInMinutes": recipe.ready_in_minutes,
+                "servings": recipe.servings,
+                "summary": recipe.summary,
+                "instructions": recipe.instructions,
+                "extendedIngredients": json.loads(recipe.ingredients),
+                "image": recipe.image_url,
+                "source_name": recipe.source_name,
+                "source_url": recipe.source_url
+            }
+            for recipe in recipes
+        ]
+
     def get_recipe_information(self, recipe_id):
         """Hole detaillierte Informationen zu einem Rezept."""
         # Check if the recipe is already in the database

@@ -29,9 +29,13 @@ def create_app():
     from .routes.auth import auth
     from .routes.main import main
     from.routes.dashboard import dashboard
+    from.routes.browse import browse
+    from.routes.meal_plan import meal_plan
     app.register_blueprint(auth)
     app.register_blueprint(main)
     app.register_blueprint(dashboard)
+    app.register_blueprint(browse)
+    app.register_blueprint(meal_plan)
 
     svg_cache = {}
 

@@ -1,59 +1,84 @@
+  
 body {
-    font-family: Arial, sans-serif;
-    background: #f0f2f5;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
-
-.form-container {
-    background: white;
-    padding: 30px 40px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    width: 300px;
+    font-family: sans-serif;
+    background-color: #f5f6f8;
     text-align: center;
+    margin: 0;
+    padding: 2em;
 }
 
-h2 {
-    margin-bottom: 20px;
-    color: #333;
+header h1 {
+    font-size: 2.5em;
+    margin-bottom: 2em;
 }
 
-.form-group {
-    margin-bottom: 15px;
-    text-align: left;
+.diet-box {
+    display: inline-block;
+    background: white;
+    padding: 2em;
+    border-radius: 10px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    margin-top: 2em;
 }
 
-.form-control {
-    width: 100%;
-    padding: 10px;
-    margin-top: 5px;
-    box-sizing: border-box;
+.diet-options {
+    margin: 2em 0;
+}
+
+.diet {
+    padding: 0.5em 1em;
+    margin: 0.2em;
     border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-.btn {
-    width: 100%;
-    padding: 10px;
-    background-color: #0077cc;
-    color: white;
-    border: none;
-    border-radius: 4px;
+    border-radius: 5px;
     cursor: pointer;
 }
 
-.btn:hover {
-    background-color: #005fa3;
+.diet.selected {
+    background-color: lightgreen;
 }
 
-a {
-    color: #0077cc;
+.calorie-form,
+.macro-notes,
+.generate-btn {
+    margin: 2em 0;
+}
+
+.macro-notes li {
+    list-style: none;
+    margin: 0.5em 0;
+}
+
+.popup {
+    display: none;
+    background: #4CAF50;
+    color: white;
+    padding: 1em;
+    margin-bottom: 2em;
+    border-radius: 5px;
+    width: fit-content;
+    margin-inline: auto;
+}
+
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #ffffff;
+    border-top: 1px solid #ddd;
+    display: flex;
+    justify-content: space-around;
+    padding: 0.8em 0;
+    box-shadow: 0 -2px 8px rgba(0,0,0,0.1);
+    font-weight: bold;
+}
+
+.bottom-nav a {
+    color: #333;
     text-decoration: none;
+    font-size: 1em;
 }
 
-a:hover {
-    text-decoration: underline;
+.bottom-nav a:hover {
+    color: #4CAF50;
 }

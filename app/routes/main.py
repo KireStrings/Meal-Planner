@@ -16,17 +16,6 @@ def home():
 def dashboard():
     return render_template('dashboard.html', user=current_user)
 
-@main.route('/planner', methods=['GET', 'POST'])
-def planner():
-    form = MealPlanForm()
-    if form.validate_on_submit():
-        # collect the form data
-        calories = form.calories_per_day.data
-        meals = form.num_meals.data
-        price = form.avg_price.data
-        diet = form.diet_type.data
-
-        # Redirect to a result page or call your API handler
-        return redirect(url_for('main.dashboard'))  # optional
-
-    return render_template('planner.html', form=form)
+@main.route('/my-plan', methods=['GET'])
+def my_plan():
+    return render_template('meal-plan.html', user=current_user)

@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, jsonify
-from flask_login import login_required, current_user
+from flask_login import login_required
 import requests
 
 dashboard = Blueprint('dashboard', __name__)

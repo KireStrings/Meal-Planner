@@ -1,13 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Mealano</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css')}}">
-  <script src="dashboard.js"></script>
-</head>
+{% extends 'base.html' %}
+{% block title %}Mealano - Dashboard{% endblock %}
 
-<body>
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+    <script src="{{ url_for('static', filename='dashboard.js') }}"></script>
+{% endblock %}
+
+{% block content %}
   <header>
     <h1>Mealano 🥄</h1>
   </header>
@@ -73,5 +72,4 @@
     <a href="/account">Account</a>
     <a href="{{ url_for('auth.logout') }}">Logout</a>
   </nav>
-</body>
-</html>
+{% endblock %}

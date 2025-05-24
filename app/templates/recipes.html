@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}Search Recipes{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='search.css') }}">
+{% endblock %}
+
+{% block content %}
+    <h1>Saved Recipes</h1>
+
+    <div class="recipes-page">
+        <div class="search-filters">
+            <select name="sort">
+                <option value="relevance">Sort by Relevance</option>
+                <option value="recent">Most Recent</option>
+            </select>
+        </div>
+
+        <div class="search-results">
+            {% for recipe in recipes %}
+                <a class="card" href="{{ url_for('browse.recipe_details', recipe_id=recipe.id) }}">
+                    <img src="{{ recipe.image }}" alt="{{ recipe.title }}"
+                         style="max-width: 100px; max-height: 100px;">
+                    {{ recipe.title }}
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

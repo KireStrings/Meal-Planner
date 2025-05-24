@@ -1,0 +1,33 @@
+{% from 'macros/icon.html' import icon %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Mealano{% endblock %}</title>
+
+    <!-- Shared (base) CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <!-- Page-specific styles will be inserted here -->
+    {% block head %}{% endblock %}
+</head>
+<body>
+{% include 'components/SideBar.html' %}
+
+<main class="main-content">
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class="flashes">
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+</main>
+</body>
+</html>

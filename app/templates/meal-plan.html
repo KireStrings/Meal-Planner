@@ -1,77 +1,60 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Meal Planner</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='meal_plan.css')}}" />
-</head>
-<body>
-  <div class="container">
-    <aside class="sidebar">
-      <div class="logo">Mealano 🥄</div>
-      <nav>
-        <ul>
-          <li>Meal Planner</li>
-          <li>Saved Recipes</li>
-          <li>Ingredients</li>
-          <li>Allergies, Preferences</li>
-        </ul>
-      </nav>
-    </aside>
-    <main class="main-content">
-      <h1>Meal Planner</h1>
-      <div class="table-container">
+{% extends 'base.html' %}
+{% block title %}Meal Planner{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='meal_plan.css') }}"/>
+    <script src="{{ url_for('static', filename='meal_plan.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+    <h1>Meal Planner</h1>
+    <div class="table-container">
         <!-- Include your meal table HTML here -->
         <table class="meal-table">
-          <thead>
+            <thead>
             <tr>
-              <th>Monday</th>
-              <th>Tuesday</th>
-              <th>Wednesday</th>
-              <th>Thursday</th>
-              <th>Friday</th>
-              <th>Saturday</th>
-              <th>Sunday</th>
+                <th>Monday</th>
+                <th>Tuesday</th>
+                <th>Wednesday</th>
+                <th>Thursday</th>
+                <th>Friday</th>
+                <th>Saturday</th>
+                <th>Sunday</th>
             </tr>
-          </thead>
-          <tbody>
+            </thead>
+            <tbody>
             <tr>
-              <td>Cell text</td>
-              <td>Cell text</td>
-              <td>Cell text</td>
-              <td>Cell text</td>
-              <td>Cell text</td>
-              <td>Cell text</td>
-              <td>Cell text</td>
-            </tr>
-            <tr>
-              <td>Cell text</td>
-              <td>Cell text</td>
-              <td>Cell text</td>
-              <td>Cell text</td>
-              <td>Cell text</td>
-              <td>Cell text</td>
-              <td>Cell text</td>
+                <td>Cell text</td>
+                <td>Cell text</td>
+                <td>Cell text</td>
+                <td>Cell text</td>
+                <td>Cell text</td>
+                <td>Cell text</td>
+                <td>Cell text</td>
             </tr>
             <tr>
-              <td>Cell text</td>
-              <td>Cell text</td>
-              <td>Cell text</td>
-              <td>Cell text</td>
-              <td>Cell text</td>
-              <td>Cell text</td>
-              <td>Cell text</td>
+                <td>Cell text</td>
+                <td>Cell text</td>
+                <td>Cell text</td>
+                <td>Cell text</td>
+                <td>Cell text</td>
+                <td>Cell text</td>
+                <td>Cell text</td>
+            </tr>
+            <tr>
+                <td>Cell text</td>
+                <td>Cell text</td>
+                <td>Cell text</td>
+                <td>Cell text</td>
+                <td>Cell text</td>
+                <td>Cell text</td>
+                <td>Cell text</td>
             </tr>
             <!-- Add more meal rows -->
             <tr>
-              <td colspan="7" class="week-range">18/05/2025 - 24/05/2025</td>
+                <td colspan="7" class="week-range">18/05/2025 - 24/05/2025</td>
             </tr>
-          </tbody>
+            </tbody>
         </table>
-      </div>
-    </main>
-  </div>
-  <script src="meal_plan.js"></script>
-</body>
-</html>
+    </div>
+{% endblock %}

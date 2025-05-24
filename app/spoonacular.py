@@ -1,0 +1,119 @@
+import requests
+from flask import jsonify
+
+from .models import Recipe
+from . import db
+import json
+
+class SpoonacularAPI:
+    BASE_URL = "https://api.spoonacular.com"
+
+    def __init__(self, api_key):
+        self.api_key = api_key
+
+    def search_recipes_by_params(self, params):
+        response = requests.get("https://api.spoonacular.com/recipes/complexSearch", params=params)
+
+        print(params)
+
+        #response = requests.get("https://api.spoonacular.com/recipes/complexSearch?apiKey=0132d061f6834c90a8086d0e4556364d&number=1&addRecipeInformation=true&addRecipeNutrition=true&addRecipeInstructions=true")
+
+        if response.status_code == 200:
+            print("API Response JSON:", response.json())
+            return jsonify(response.json())
+        else:
+            print("error")
+            return jsonify({"error": "Failed to fetch data"}), 500
+
+    def search_recipes(self, query, number=10):
+        """Suche nach Rezepten basierend auf einer Abfrage."""
+        url = f"{self.BASE_URL}/recipes/complexSearch"
+        params = {
+            "query": query,
+            "number": number,
+            "apiKey": self.api_key
+        }
+        response = requests.get(url, params=params)
+        response.raise_for_status()  # Fehler werfen, falls die Anfrage fehlschlägt
+        return response.json()
+
+    def search_recipes_with_ingredients(self, ingredients, number=10, sort="max-used-ingredients"):
+        """
+        Search for recipes using ingredients with additional filters.
+        :param ingredients: A comma-separated list of ingredients.
+        :param number: Number of recipes to return.
+        :param sort: Sorting parameter (e.g., 'max-used-ingredients' or 'min-missing-ingredients').
+        :return: JSON response with recipes.
+        """
+        url = f"{self.BASE_URL}/recipes/complexSearch"
+        params = {
+            "includeIngredients": ingredients,
+            "number": number,
+            "sort": sort,
+            "apiKey": self.api_key
+        }
+        response = requests.get(url, params=params)
+        response.raise_for_status()
+        return response.json()
+
+    def get_saved_recipes(self):
+        """Hole alle Rezepte aus der Datenbank."""
+        recipes = Recipe.query.all()
+        return [
+            {
+                "id": recipe.id,
+                "title": recipe.title,
+                "readyInMinutes": recipe.ready_in_minutes,
+                "servings": recipe.servings,
+                "summary": recipe.summary,
+                "instructions": recipe.instructions,
+                "extendedIngredients": json.loads(recipe.ingredients),
+                "image": recipe.image_url,
+                "source_name": recipe.source_name,
+                "source_url": recipe.source_url
+            }
+            for recipe in recipes
+        ]
+
+    def get_recipe_information(self, recipe_id):
+        """Hole detaillierte Informationen zu einem Rezept."""
+        # Check if the recipe is already in the database
+        recipe = Recipe.query.get(recipe_id)
+        if recipe:
+            return {
+                "id": recipe.id,
+                "title": recipe.title,
+                "readyInMinutes": recipe.ready_in_minutes,
+                "servings": recipe.servings,
+                "summary": recipe.summary,
+                "instructions": recipe.instructions,
+                "extendedIngredients": json.loads(recipe.ingredients),
+                "image": recipe.image_url,
+                "source_name": recipe.source_name,
+                "source_url": recipe.source_url
+            }
+
+        # If not, fetch from the API
+        url = f"{self.BASE_URL}/recipes/{recipe_id}/information"
+        params = {"apiKey": self.api_key}
+        response = requests.get(url, params=params)
+        response.raise_for_status()
+        data = response.json()
+
+        # Save the recipe to the database
+        new_recipe = Recipe(
+            id=data["id"],
+            title=data["title"],
+            ready_in_minutes=data["readyInMinutes"],
+            servings=data["servings"],
+            summary=data.get("summary"),
+            instructions=data.get("instructions"),
+            ingredients=json.dumps(data.get("extendedIngredients", [])),
+            image_url=data.get("image"),
+            source_name=data.get("sourceName"),  # Store the source name
+            source_url=data.get("sourceUrl")  # Store the recipe URL
+        )
+        db.session.add(new_recipe)
+        db.session.commit()
+
+        return data

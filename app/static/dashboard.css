@@ -53,27 +53,3 @@ header h1 {
     width: fit-content;
     margin-inline: auto;
 }
-
-.bottom-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background-color: #ffffff;
-    border-top: 1px solid #ddd;
-    display: flex;
-    justify-content: space-around;
-    padding: 0.8em 0;
-    box-shadow: 0 -2px 8px rgba(0,0,0,0.1);
-    font-weight: bold;
-}
-
-.bottom-nav a {
-    color: #333;
-    text-decoration: none;
-    font-size: 1em;
-}
-
-.bottom-nav a:hover {
-    color: #4CAF50;
-}

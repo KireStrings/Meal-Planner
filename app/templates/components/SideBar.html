@@ -10,21 +10,16 @@
         </a>
     </div>
 
-    <div class="top-icons">
-        <div class="icon-circle">
-            {{ icon('user') }}
-        </div>
-        <div class="icon-link">
-            {{ icon('settings') }}
-        </div>
-    </div>
-
     <div class="search-bar">
         <a href="/search">{{ icon('search', 'search-icon') }}</a>
         <input type="text" placeholder="Search for...">
     </div>
 
     <div class="menu">
+        <a href="{{ url_for('dessert_drinks_page.dessert_view') }}" class="menu-item {{ 'active' if current_page == 'dessert_drinks_page.dessert_view' else '' }}">
+            {{ icon('cupcake') }}
+            <div class="menu-text">Dessert/Drinks</div>
+        </a>
         <a href="/my-plan" class="menu-item {{ 'active' if current_page == 'meal_plan.my_plan' else '' }}">
             {{ icon('calendar') }}
             <div class="menu-text">Meal Planner</div>
@@ -43,5 +38,12 @@
 {#            {{ icon('users') }}#}
 {#            <div class="menu-text">Allergies, Preferences</div>#}
 {#        </div>#}
+    </div>
+
+    <div class="account-container">
+        <a href="/account" class="icon-circle">
+            {{ icon('user') }}
+        </a>
+        <a href="{{ url_for('auth.logout') }}">Logout</a>
     </div>
 </div>

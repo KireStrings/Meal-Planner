@@ -3,7 +3,7 @@ from wtforms import StringField, PasswordField, SubmitField, IntegerField, Decim
 from wtforms.validators import InputRequired, DataRequired, NumberRange
 
 class LoginForm(FlaskForm):
-    username = StringField('Username', validators=[InputRequired(), DataRequired()])
+    username = StringField('Username', validators=[InputRequired()])
     password = PasswordField('Password', validators=[InputRequired()])
     submit = SubmitField('Login')
 

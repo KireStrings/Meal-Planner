@@ -13,6 +13,12 @@ class RegisterForm(FlaskForm):
     password = PasswordField('Password', validators=[InputRequired()])
     submit = SubmitField('Register')
 
+class AccountForm(FlaskForm):
+    username = StringField('Username', validators=[InputRequired()])
+    email = StringField('Email', validators=[InputRequired(), DataRequired()])
+    password = PasswordField('New Password', validators=[])
+    submit = SubmitField('Save Changes')
+
 class MealPlanForm(FlaskForm):
     calories_per_day = IntegerField('Calories per day', validators=[DataRequired(), NumberRange(min=500, max=10000)])
     num_meals = IntegerField('Number of meals', validators=[DataRequired(), NumberRange(min=2, max=6)])

@@ -6,6 +6,8 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='auth.css') }}">
 </head>
 <body>
+    {% include 'components/Popup.html' %}
+
     <div class="form-container">
         <h2>Register</h2>
         <form method="POST">

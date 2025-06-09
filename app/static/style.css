@@ -170,27 +170,6 @@ a {
     margin: 0.5em 0;
 }
 
-
 a:hover {
     text-decoration: underline;
-}
-
-.popup {
-    display: none;
-    background: gray;
-    color: white;
-    padding: .5em;
-    margin-bottom: .5em;
-    border-radius: 5px;
-    width: fit-content;
-    margin-inline: auto;
-}
-.popup.success {
-    background: #4CAF50;
-}
-.popup.error {
-    background: #f44336;
-}
-.popup.warning {
-    background: #ff9800;
 }

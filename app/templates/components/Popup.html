@@ -1,0 +1,13 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='components/Popup.css') }}">
+<script defer src="{{ url_for('static', filename='components/Popup.js') }}"></script>
+
+<!-- This template is used to display flash messages in a popup style -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <div class="flashes">
+            {% for (category, message) in messages %}
+                <div class="popup {{ category }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endwith %}

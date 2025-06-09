@@ -1,44 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
-
-/* Reset & Base */
-* {
-    margin: 0;
-    box-sizing: border-box;
-}
-
-a {
-    color: inherit;
-    text-decoration: none;
-}
-
-/* Icons loaded via macro have <span>-container for adding classes */
-.icon {
-    display: contents;
-}
-
 body {
-    font-family: 'Roboto', sans-serif;
-    background-color: #f5f6f8;
-    color: #333;
+    font-family: Arial, sans-serif;
+    background: #f0f2f5;
     display: flex;
-    min-height: 100vh;
-}
-
-/* Main content */
-.main-content {
-    /*TODO: margin: 0;?*/
-    padding: 1rem 1rem; /*TODO: 2em / 20px ?*/
-    flex: 1;
-    overflow-x: auto;
-}
-
-/* Utility classes */
-.card {
-    background: white;
-    padding: 1rem;
-    border: 1px solid #ddd;
-    border-radius: 0.5rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }
 
 .form-container {
@@ -50,17 +16,12 @@ body {
     text-align: center;
 }
 
-header h1 {
-    font-size: 2.5em;
-    margin-bottom: 2em;
-}
-
 h2 {
     margin-bottom: 20px;
     color: #333;
 }
 
-.form-group { /*TODO: .form-... -> .diet-... (see below)*/
+.form-group {
     margin-bottom: 15px;
     text-align: left;
 }
@@ -74,95 +35,25 @@ h2 {
     border-radius: 4px;
 }
 
-a {
-    color: #0077cc;
-    text-decoration: none;
-}
-
-a:hover {
-    cursor: pointer;
-}
-
 .btn {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
+    width: 100%;
     padding: 10px;
     background-color: #0077cc;
     color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    font-size: .8rem;
 }
 
-.btn.link {
-    background: white;
-    border: 1px solid #007bff;
-    color: #007bff;
+.btn:hover {
+    background-color: #005fa3;
 }
 
-.btn.disabled {
-    background: #ccc;
-    color: #666;
-    cursor: default;
-}
-.btn.link.disabled {
-    background: white;
-    border: 1px solid #ccc;
-    color: #666;
+a {
+    color: #0077cc;
+    text-decoration: none;
 }
 
-.btn:not(.disabled):hover {
-    /*background-color: #005fa3;*/
-    /*background-color: #0056b3;*/
-    opacity: 0.9;
-}
-
-.diet-box {
-    display: inline-block;
-    background: white;
-    padding: 2em;
-    border-radius: 10px;
-    box-shadow: 0 0 8px rgba(0,0,0,0.1);
-    margin-top: 2em;
-}
-
-.diet-options {
-    margin: 2em 0;
-}
-
-.diet {
-    padding: 0.5em 1em;
-    margin: 0.2em;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.diet.selected {
-    background-color: lightgreen;
-}
-
-.calorie-form,
-.macro-notes,
-.generate-btn {
-    margin: 2em 0;
-}
-
-.macro-notes li {
-    list-style: none;
-    margin: 0.5em 0;
-}
-
-.popup {
-    display: none;
-    background: #4CAF50;
-    color: white;
-    padding: 1em;
-    margin-bottom: 2em;
-    border-radius: 5px;
-    width: fit-content;
-    margin-inline: auto;
+a:hover {
+    text-decoration: underline;
 }

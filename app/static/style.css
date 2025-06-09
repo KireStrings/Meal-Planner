@@ -177,11 +177,20 @@ a:hover {
 
 .popup {
     display: none;
-    background: #4CAF50;
+    background: gray;
     color: white;
-    padding: 1em;
-    margin-bottom: 2em;
+    padding: .5em;
+    margin-bottom: .5em;
     border-radius: 5px;
     width: fit-content;
     margin-inline: auto;
+}
+.popup.success {
+    background: #4CAF50;
+}
+.popup.error {
+    background: #f44336;
+}
+.popup.warning {
+    background: #ff9800;
 }

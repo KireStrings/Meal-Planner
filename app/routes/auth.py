@@ -16,10 +16,10 @@ def login():
         user = User.query.filter_by(username=username).first()
         if user and user.password == password:
             login_user(user)
-            flash('Logged in successfully!')
+            flash('Logged in successfully!', 'success')
             return redirect(url_for('main.dashboard'))
         else:
-            flash('Invalid username or password.')
+            flash('Invalid username or password.', 'error')
 
     return render_template('login.html', form=form)
 
@@ -36,7 +36,7 @@ def register():
             (User.username == username) | (User.email == email)
         ).first()
         if existing_user:
-            flash('Username or email already exists.')
+            flash('Username or email already exists.', 'warning')
             return redirect(url_for('auth.register'))
 
         # Create new user
@@ -44,7 +44,7 @@ def register():
         db.session.add(new_user)
         db.session.commit()
 
-        flash('Registration successful! Please log in.')
+        flash('Registration successful! Please log in.', 'success')
         return redirect(url_for('auth.login'))
 
     return render_template('register.html', form=form)

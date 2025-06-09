@@ -23,12 +23,7 @@
         });
       });
 
-      const popup = document.getElementById("successPopup");
-      if (popup) {
-        popup.style.display = "block";
-        setTimeout(() => popup.style.display = "none", 3000);
-      }
-
+      // Generate click handler
       document.querySelector(".generate-btn").addEventListener("click", async () => {
         const calories = document.querySelector("input[name='calories']").value;
         const meals = parseInt(document.querySelector("select[name='meals']").value);

@@ -32,11 +32,13 @@ def create_app():
     from.routes.browse import browse
     from.routes.meal_plan import meal_plan
     from.routes.dessert_drinks_page import dessert_drinks_page
+    from.routes.account import account
     app.register_blueprint(auth)
     app.register_blueprint(main)
     app.register_blueprint(dashboard)
     app.register_blueprint(browse)
     app.register_blueprint(meal_plan)
+    app.register_blueprint(account)
 
     svg_cache = {}
 

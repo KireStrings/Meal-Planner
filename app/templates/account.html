@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}Account{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='account.css') }}">
+{% endblock %}
+
+{% block content %}
+    <div class="account-page">
+        <div class="account-header">
+            <div class="avatar-placeholder">{{ icon('user') }}</div>
+            <div>
+                <h2 class="account-name">{{ user.username }}</h2>
+                <p class="account-email">{{ user.email }}</p>
+            </div>
+        </div>
+
+        <form class="account-form">
+            <label>
+                Full Name
+                <input type="text" name="name" value="{{ user.username }}">
+            </label>
+            <label>
+                Email
+                <input type="email" name="email" value="{{ user.email }}">
+            </label>
+            <label>
+                New Password
+                <input type="password" name="password" placeholder="••••••••">
+            </label>
+
+            <div class="form-actions">
+                <button type="submit">Save Changes</button>
+                <button type="button" class="secondary">Cancel</button>
+            </div>
+        </form>
+    </div>
+{% endblock %}

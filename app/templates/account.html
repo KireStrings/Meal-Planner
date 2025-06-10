@@ -19,11 +19,17 @@
             {{ form.hidden_tag() }}
             <div class="form-group">
                 {{ form.username.label }}
-                {{ form.username(class="form-control") }}
+                {{ form.username(class="form-control" + (' is-invalid' if form.username.errors else '')) }}
+                {% for error in form.username.errors %}
+                    <div class="invalid-tooltip">{{ error }}</div>
+                {% endfor %}
             </div>
             <div class="form-group">
                 {{ form.email.label }}
-                {{ form.email(class="form-control") }}
+                {{ form.email(class="form-control" + (' is-invalid' if form.email.errors else '')) }}
+                {% for error in form.email.errors %}
+                    <div class="invalid-tooltip">{{ error }}</div>
+                {% endfor %}
             </div>
             <div class="form-group">
                 {{ form.password.label }}

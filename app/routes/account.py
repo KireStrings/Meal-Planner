@@ -28,14 +28,23 @@ def account_page():
             return redirect(url_for('account.account_page'))
 
         # Update user information
-        current_user.username = form.username.data
-        current_user.email = form.email.data
-        if form.password.data:
+        updated = False
+        if form.username.data != current_user.username:
+            current_user.username = form.username.data
+            updated = True
+        if form.email.data != current_user.email:
+            current_user.email = form.email.data
+            updated = True
+        if form.password.data and form.password.data != current_user.password:
             current_user.password = form.password.data
+            updated = True
 
-        db.session.commit()
+        if updated:
+            db.session.commit()
+            flash('Changes saved.', 'success')
+        else:
+            flash('No changes made.', 'info')
 
-        flash("Changes saved.", "success")
         return redirect(url_for('account.account_page'))
 
     return render_template('account.html', form=form, user=current_user)

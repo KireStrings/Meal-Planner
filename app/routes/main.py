@@ -4,11 +4,9 @@ from flask_login import login_required, current_user
 main = Blueprint('main', __name__)
 
 @main.route('/')
+@login_required
 def home():
-    if current_user.is_authenticated:
-        return redirect(url_for('main.dashboard'))
-    else:
-        return redirect(url_for('auth.login'))
+    return redirect(url_for('main.dashboard'))
 
 @main.route('/dashboard')
 @login_required

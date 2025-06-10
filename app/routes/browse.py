@@ -1,10 +1,12 @@
 from flask import Blueprint, current_app, request, render_template
+from flask_login import login_required
 
 from ..spoonacular import SpoonacularAPI
 
 browse = Blueprint('browse', __name__)
 
 @browse.route('/search', methods=['GET', 'POST'])
+@login_required
 def search():
     recipes = []
     query = ''
@@ -23,6 +25,7 @@ def search():
     return render_template('search.html', recipes=recipes, query=query, ingredients=ingredients)
 
 @browse.route('/recipes')
+@login_required
 def recipes():
     api_key = current_app.config['SPOONACULAR_API_KEY']
     spoonacular = SpoonacularAPI(api_key)
@@ -30,6 +33,7 @@ def recipes():
     return render_template('recipes.html', recipes=recipes)
 
 @browse.route('/recipe/<int:recipe_id>')
+@login_required
 def recipe_details(recipe_id):
     api_key = current_app.config['SPOONACULAR_API_KEY']
     spoonacular = SpoonacularAPI(api_key)

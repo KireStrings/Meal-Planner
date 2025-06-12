@@ -1,5 +1,6 @@
 from . import db
 from flask_login import UserMixin
+from datetime import datetime as dt, timezone as tz
 
 
 class User(UserMixin, db.Model):
@@ -8,7 +9,8 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(150), unique=True)
     password = db.Column(db.String(150))
     last_meal = db.Column(db.String(250))  # Optional: last planned meal
-
+    
+    saved_recipes_assoc = db.relationship('UserSavedRecipe', backref='user', lazy='dynamic')
 
 class Recipe(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -21,3 +23,11 @@ class Recipe(db.Model):
     image_url = db.Column(db.String(500), nullable=True)  # Store the image URL
     source_name = db.Column(db.String(255), nullable=True)  # Store the source name
     source_url = db.Column(db.String(500), nullable=True)  # Store the recipe source URL
+    
+    saved_by_assoc = db.relationship('UserSavedRecipe', backref='recipe', lazy='dynamic')
+
+
+class UserSavedRecipe(db.Model):
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    recipe_id = db.Column(db.Integer, db.ForeignKey('recipe.id'), primary_key=True)
+    saved_at = db.Column(db.DateTime, default=lambda: dt.now(tz.utc))

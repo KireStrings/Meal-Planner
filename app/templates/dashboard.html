@@ -29,32 +29,35 @@
       </div>
 
       <div class="calorie-form">
-        <label>I want to eat</label>
-        <input type="number" name="calories" value="1800" min="0"> calories
+        <label for="calories">I want to eat</label>
+        <input type="number" name="calories" value="1800" min="0"> calories per day.
         <br><br>
         in
         <select name="meals">
           <option value="1">1</option>
           <option value="2">2</option>
-          <option value="3">3</option>
+          <option value="3" selected>3</option>
           <option value="4">4</option>
-          <option value="5" selected>5</option>
+          <option value="5">5</option>
           <option value="6">6</option>
         </select> meals
       </div>
 
       <div class="macro-notes">
         <ul>
-          <li style="color: orange;">
-            ● Carbs (g): <input type="number" name="minCarbs" value="90" min="0">
-          </li>
-          <li style="color: teal;">
-            ● Fat (g): <input type="number" name="minFat" value="40" min="0">
-          </li>
-          <li style="color: purple;">
-            ● Protein (g): <input type="number" name="minProtein" value="90" min="0">
-          </li>
+          <li style="color: orange;">● Carbs (g): <span id="carbs-val">90</span></li>
+          <li style="color: teal;">● Fat (g): <span id="fat-val">40</span></li>
+          <li style="color: purple;">● Protein (g): <span id="protein-val">0</span></li>
         </ul>
+      </div>
+
+      <div class="health-options">
+        <h4>Health Preference</h4>
+        <div class="health-choice">
+          <label><input type="radio" name="health" value="veryHealthy"> 💚 Very Healthy</label>
+          <label><input type="radio" name="health" value="mediumHealthy"> 💛 In between Healthy and Unhealthy</label>
+          <label><input type="radio" name="health" value="noPreference" checked> 🩶 I don’t care</label>
+        </div>
       </div>
 
       <div>
@@ -63,13 +66,14 @@
     </div>
 
     <!-- Container for results -->
-    <div id="recipe-results" style="margin-top: 3em;"></div>
+    <div id="recipe-results"></div>
   </main>
 
   <nav class="bottom-nav">
     <a href="/browse">Browse Meals</a>
     <a href="/my-plan">My Meal Plan</a>
     <a href="/account">Account</a>
+    <a href="{{ url_for('dessert_drinks_page.dessert_view') }}">Dessert/Drinks</a>
     <a href="{{ url_for('auth.logout') }}">Logout</a>
   </nav>
 {% endblock %}

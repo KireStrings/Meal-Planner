@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dessert & Drinks</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='dessert_drinks.css') }}">
+  <script src="{{ url_for('static', filename='dessert_drinks.js') }}"></script>
+</head>
+<body>
+
+  <h1>Dessert & Drinks</h1>
+
+  <div class="container">
+    <div class="checkboxes">
+      <label><input type="checkbox" name="extraType" value="dessert"> 🍰 Dessert</label>
+      <label><input type="checkbox" name="extraType" value="drink"> 🥤 Drink</label>
+    </div>
+
+    <div class="form-group">
+      <label for="maxDessertCalories">Max Calories (Dessert)</label>
+      <input type="number" id="maxDessertCalories" value="400" min="1">
+    </div>
+
+    <div class="form-group">
+      <label for="maxDrinkCalories">Max Calories (Drink)</label>
+      <input type="number" id="maxDrinkCalories" value="250" min="1">
+    </div>
+
+    <div class="form-group">
+      <label for="numResults">How many per type?</label>
+      <select id="numResults">
+        <option value="1">1</option>
+        <option value="2" selected>2</option>
+        <option value="3">3</option>
+      </select>
+    </div>
+
+    <button id="generateExtras">Generate</button>
+
+    <div class="results" id="extrasResults"></div>
+  </div>
+
+  <nav class="bottom-nav">
+    <a href="{{ url_for('dashboard.dashboard_view') }}">Home</a>
+    <a href="/browse">Browse Meals</a>
+    <a href="/my-plan">My Plan</a>
+    <a href="/account">Account</a>
+    <a href="{{ url_for('auth.logout') }}">Logout</a>
+  </nav>
+</body>
+</html>

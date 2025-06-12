@@ -31,6 +31,7 @@ def create_app():
     from.routes.dashboard import dashboard
     from.routes.browse import browse
     from.routes.meal_plan import meal_plan
+    from.routes.dessert_drinks_page import dessert_drinks_page
     app.register_blueprint(auth)
     app.register_blueprint(main)
     app.register_blueprint(dashboard)
@@ -57,6 +58,7 @@ def create_app():
     @app.context_processor
     def inject_current_page():
         return dict(current_page=request.endpoint)
+    app.register_blueprint(dessert_drinks_page)
 
     return app
 

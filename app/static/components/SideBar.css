@@ -51,6 +51,11 @@
     word-wrap: break-word;
 }
 
+.icon svg {
+    width: 1.5em;
+    height: 1.5em;
+}
+
 /* Account-icon and Logout container */
 .account-container {
     align-self: stretch;

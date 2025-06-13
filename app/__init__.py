@@ -38,6 +38,7 @@ def create_app():
     app.register_blueprint(dashboard)
     app.register_blueprint(browse)
     app.register_blueprint(meal_plan)
+    app.register_blueprint(dessert_drinks_page)
     app.register_blueprint(account)
 
     svg_cache = {}
@@ -60,7 +61,6 @@ def create_app():
     @app.context_processor
     def inject_current_page():
         return dict(current_page=request.endpoint)
-    app.register_blueprint(dessert_drinks_page)
 
     return app
 

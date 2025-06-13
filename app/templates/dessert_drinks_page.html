@@ -1,14 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dessert & Drinks</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='dessert_drinks.css') }}">
-  <script src="{{ url_for('static', filename='dessert_drinks.js') }}"></script>
-</head>
-<body>
+{% extends "base.html" %}
+{% block title %}Dessert & Drinks{% endblock %}
 
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='dessert_drinks.css') }}">
+    <script defer src="{{ url_for('static', filename='dessert_drinks.js') }}"></script>
+{% endblock %}
+
+{% block content %}
   <h1>Dessert & Drinks</h1>
 
   <div class="container">
@@ -40,13 +38,4 @@
 
     <div class="results" id="extrasResults"></div>
   </div>
-
-  <nav class="bottom-nav">
-    <a href="{{ url_for('dashboard.dashboard_view') }}">Home</a>
-    <a href="/browse">Browse Meals</a>
-    <a href="/my-plan">My Plan</a>
-    <a href="/account">Account</a>
-    <a href="{{ url_for('auth.logout') }}">Logout</a>
-  </nav>
-</body>
-</html>
+{% endblock %}

@@ -9,6 +9,12 @@ user_mealplan = db.Table('user_mealplan',
     db.Column('mealplan_id', db.Integer, db.ForeignKey('meal_plan.id'), primary_key=True)
 )
 
+mealplan_recipe = db.Table('mealplan_recipe',
+    db.Column('mealplan_id', db.Integer, db.ForeignKey('meal_plan.id'), primary_key=True),
+    db.Column('recipe_id', db.Integer, db.ForeignKey('recipe.id'), primary_key=True)
+)
+
+
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(150), unique=True)
@@ -39,9 +45,6 @@ class Recipe(db.Model):
     
     saved_by_assoc = db.relationship('UserSavedRecipe', backref='recipe', lazy='dynamic')
 
-    meal_plans = db.relationship('MealPlan', backref='recipe', lazy='dynamic')
-
-
 class UserSavedRecipe(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
     recipe_id = db.Column(db.Integer, db.ForeignKey('recipe.id'), primary_key=True)
@@ -55,7 +58,12 @@ class MealPlan(db.Model):
     title = db.Column(db.String(255), nullable=False)
     _input_date = db.Column("input_date", db.DateTime)
     date = db.Column(db.String)
-    recipe_id = db.Column(db.Integer, db.ForeignKey('recipe.id'))
+    recipes = db.relationship(
+        'Recipe',
+        secondary='mealplan_recipe',
+        backref=db.backref('meal_plans', lazy='dynamic'),
+        lazy='dynamic'
+    )
 
     @property
     def input_date(self):

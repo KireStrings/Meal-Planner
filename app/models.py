@@ -1,8 +1,6 @@
 from . import db
 from flask_login import UserMixin
-from sqlalchemy.ext.hybrid import hybrid_property
 from datetime import datetime as dt, timezone as tz
-
 
 user_mealplan = db.Table('user_mealplan',
     db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
@@ -13,7 +11,6 @@ mealplan_recipe = db.Table('mealplan_recipe',
     db.Column('mealplan_id', db.Integer, db.ForeignKey('meal_plan.id'), primary_key=True),
     db.Column('recipe_id', db.Integer, db.ForeignKey('recipe.id'), primary_key=True)
 )
-
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -50,7 +47,6 @@ class UserSavedRecipe(db.Model):
     recipe_id = db.Column(db.Integer, db.ForeignKey('recipe.id'), primary_key=True)
     saved_at = db.Column(db.DateTime, default=lambda: dt.now(tz.utc))
 
-
 class MealPlan(db.Model):
     __tablename__ = 'meal_plan'
 
@@ -73,3 +69,11 @@ class MealPlan(db.Model):
     def input_date(self, value):
         self._input_date = value
         self.date = value.strftime("%A %d") if value else None
+
+class Ingredient(db.Model):
+    __tablename__ = 'ingredients'
+
+    name = db.Column(db.String, primary_key=True)
+    image = db.Column(db.String, nullable=True)
+    meta = db.Column(db.String, nullable=True)  # Store additional metadata as JSON string
+    created_at = db.Column(db.DateTime, default=dt.utcnow)

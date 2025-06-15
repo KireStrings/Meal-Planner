@@ -24,6 +24,15 @@ def search():
 
     return render_template('search.html', recipes=recipes, query=query, ingredients=ingredients)
 
+@browse.route('/autocomplete', methods=['GET'])
+@login_required
+def autocomplete():
+    api_key = current_app.config['SPOONACULAR_API_KEY']
+    spoonacular = SpoonacularAPI(api_key)
+    query = request.args.get('q', '')
+    ingredients = spoonacular.autocomplete_ingredients(query)
+    return {'results': ingredients}
+
 @browse.route('/recipes')
 @login_required
 def recipes():

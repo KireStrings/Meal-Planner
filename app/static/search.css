@@ -5,11 +5,34 @@
     margin-bottom: 1rem;
 }
 
+.search-bar-autocomplete {
+    position: relative;
+    flex-grow: 1;
+}
+
 .search-form input[type="text"] {
+    width: 100%;
     flex-grow: 1;
     padding: 0.5rem;
     border: 1px solid #ccc;
     border-radius: 4px;
+}
+
+.autocomplete-suggestions {
+    border: 1px solid #ccc;
+    max-height: 150px;
+    overflow-y: auto;
+    position: absolute;
+    background: white;
+    z-index: 1000;
+    width: 100%;
+}
+.autocomplete-suggestions div {
+    padding: 4px 8px;
+    cursor: pointer;
+}
+.autocomplete-suggestions div:hover {
+    background: #eee;
 }
 
 .search-filters {

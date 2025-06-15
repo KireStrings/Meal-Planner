@@ -1,10 +1,10 @@
 from datetime import datetime
-from flask import Blueprint, render_template, request, jsonify, session
+from flask import Blueprint, render_template, request, jsonify, session, current_app
 from flask_login import login_required, current_user
 from ..models import Recipe, db, MealPlan
-import requests
 import random
 import hashlib
+from ..spoonacular import SpoonacularAPI
 
 dashboard = Blueprint('dashboard', __name__)
 
@@ -21,6 +21,9 @@ def generate_recipe_hash(recipe):
 @dashboard.route('/generate', methods=['POST'])
 @login_required
 def generate_meal_plan():
+    api_key = current_app.config['SPOONACULAR_API_KEY']
+    spoonacular = SpoonacularAPI(api_key)
+
     if request.method == 'POST':
         data = request.get_json()
 
@@ -86,7 +89,6 @@ def generate_meal_plan():
                 base_offset = {"veryHealthy": 0, "mediumHealthy": 2, "noPreference": 1}.get(health_pref, 0)
 
                 params = {
-                    "apiKey": "09cecb76996e47ecab4383edff96eaa5",
                     "number": 5,
                     "addRecipeInformation": True,
                     "addRecipeInstructions": False,
@@ -106,8 +108,8 @@ def generate_meal_plan():
 
             for attempt in range(5):
                 params, base_macros = build_params()
-                response = requests.get("https://api.spoonacular.com/recipes/complexSearch", params=params)
-                print("Attempt", attempt + 1, "URL:", response.url)
+                response = spoonacular.search_recipes_by_params(params)
+                print("Attempt", attempt + 1, "URL:", response.url, "Status Code:", response.status_code)
 
                 if response.status_code != 200:
                     continue
@@ -178,7 +180,7 @@ def generate_meal_plan():
                 meal_plan[meal] = recipes
 
         print("Meal plan keys:", meal_plan.keys())
-        
+
         return jsonify(meal_plan)
 
 @dashboard.route('/save_plan', methods=['POST'])
@@ -187,7 +189,7 @@ def save_meal_plan():
     data = request.get_json()
     meal_plan_data = data.get('mealPlan', {})
     plan_title = data.get('planTitle', f"{current_user.username}'s plan")
-    
+
     if not meal_plan_data:
         return jsonify({'error': 'Meal plan data is missing'}), 400
 
@@ -202,7 +204,7 @@ def save_meal_plan():
         new_plan = MealPlan(
             title=plan_title,
             _input_date=datetime.utcnow())
-        
+
         for day_recipes in meal_plan_data.values():
             for recipe_data in day_recipes:
                 recipe = Recipe.query.get(recipe_data['id'])

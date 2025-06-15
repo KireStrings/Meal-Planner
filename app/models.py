@@ -1,5 +1,6 @@
 from . import db
 from flask_login import UserMixin
+from sqlalchemy.ext.hybrid import hybrid_property
 from datetime import datetime as dt, timezone as tz
 
 
@@ -26,8 +27,29 @@ class Recipe(db.Model):
     
     saved_by_assoc = db.relationship('UserSavedRecipe', backref='recipe', lazy='dynamic')
 
+    meal_plans = db.relationship('MealPlan', backref='recipe', lazy='dynamic')
+
 
 class UserSavedRecipe(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
     recipe_id = db.Column(db.Integer, db.ForeignKey('recipe.id'), primary_key=True)
     saved_at = db.Column(db.DateTime, default=lambda: dt.now(tz.utc))
+
+
+class MealPlan(db.Model):
+    __tablename__ = 'meal_plan'
+
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(255), nullable=False)
+    _input_date = db.Column("input_date", db.DateTime)
+    date = db.Column(db.String)
+    recipe_id = db.Column(db.Integer, db.ForeignKey('recipe.id'))
+
+    @property
+    def input_date(self):
+        return self._input_date
+    
+    @input_date.setter
+    def input_date(self, value):
+        self._input_date = value
+        self.date = value.strftime("%A %d") if value else None

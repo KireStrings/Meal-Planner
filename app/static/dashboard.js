@@ -26,7 +26,6 @@
       });
     });
 
-    // Generate click handler
     document.querySelector(".generate-btn").addEventListener("click", async () => {
       const calories = document.querySelector("input[name='calories']").value;
       const meals = parseInt(document.querySelector("select[name='meals']").value);
@@ -97,10 +96,6 @@
         if (section) resultsContainer.appendChild(section);
       });
 
-      // Show Save button only if ALL of breakfast, lunch, and dinner are present and non-empty
-      const hasAllCoreMeals = ['breakfast', 'lunch', 'dinner'].every(
-        meal => !Array.isArray(data[meal]) || data[meal].length === 0
-      );
-      saveButton.style.display = hasAllCoreMeals ? "block" : "none";
+      saveButton.style.display = "block";
     });
   });

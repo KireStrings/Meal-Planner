@@ -1,5 +1,7 @@
+from datetime import datetime
 from flask import Blueprint, render_template, request, jsonify, session
-from flask_login import login_required
+from flask_login import login_required, current_user
+from ..models import Recipe, db, MealPlan
 import requests
 import random
 import hashlib
@@ -178,3 +180,44 @@ def generate_meal_plan():
         print("Meal plan keys:", meal_plan.keys())
         
         return jsonify(meal_plan)
+
+@dashboard.route('/save_plan', methods=['POST'])
+@login_required
+def save_meal_plan():
+    data = request.get_json()
+    meal_plan_data = data.get('mealPlan', {})
+    plan_title = data.get('planTitle', f"{current_user.username}'s plan")
+    
+    if not meal_plan_data:
+        return jsonify({'error': 'Meal plan data is missing'}), 400
+
+    try:
+        # You may wish to assign a main recipe here; otherwise set to None
+        first_valid_recipe = None
+        for recipes in meal_plan_data.values():
+            if isinstance(recipes, list) and recipes:
+                first_valid_recipe = recipes[0]
+                break
+
+        new_plan = MealPlan(
+            title=plan_title,
+            _input_date=datetime.utcnow())
+        
+        for day_recipes in meal_plan_data.values():
+            for recipe_data in day_recipes:
+                recipe = Recipe.query.get(recipe_data['id'])
+                if recipe:
+                    new_plan.recipes.append(recipe)
+
+        current_user.meal_plans.append(new_plan)
+
+        db.session.add(new_plan)
+        db.session.flush()  # Ensure the MealPlan ID is available
+
+
+        db.session.commit()
+        return jsonify({'message': 'Meal plan saved successfully', 'mealPlanId': new_plan.id}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': f'Failed to save meal plan: {str(e)}'}), 500

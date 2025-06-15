@@ -4,6 +4,11 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from datetime import datetime as dt, timezone as tz
 
 
+user_mealplan = db.Table('user_mealplan',
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
+    db.Column('mealplan_id', db.Integer, db.ForeignKey('meal_plan.id'), primary_key=True)
+)
+
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(150), unique=True)
@@ -12,6 +17,13 @@ class User(UserMixin, db.Model):
     last_meal = db.Column(db.String(250))  # Optional: last planned meal
     
     saved_recipes_assoc = db.relationship('UserSavedRecipe', backref='user', lazy='dynamic')
+
+    meal_plans = db.relationship(
+        'MealPlan',
+        secondary='user_mealplan',
+        backref=db.backref('users', lazy='dynamic'),
+        lazy='dynamic'
+    )
 
 class Recipe(db.Model):
     id = db.Column(db.Integer, primary_key=True)

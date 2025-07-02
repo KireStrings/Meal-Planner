@@ -1,6 +1,7 @@
 /* Search Page */
 .search-form {
     display: flex;
+    flex-direction: column;
     gap: 0.5rem;
     margin-bottom: 1rem;
 }
@@ -10,9 +11,16 @@
     flex-grow: 1;
 }
 
-.search-form input[type="text"] {
+.search-form > div {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.search-form input,
+.search-form select {
     width: 100%;
-    flex-grow: 1;
+    flex: 1;
     padding: 0.5rem;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -64,4 +72,12 @@
 .card {
     display: flex;
     flex-direction: column;
+}
+
+.search-results .card img {
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+    /*max-width: 100px;*/
+    /*max-height: 100px;*/
 }

@@ -10,42 +10,79 @@
     <h1>Search Recipes</h1>
 
     <div class="search-page">
-        <!-- Search by Query Form -->
-        <form class="search-form" method="POST">
-            <input type="text" name="query" placeholder="Enter a recipe name" value="{{ query }}"/>
+        <form method="POST" class="search-form">
+            <div>
+                <label>Search Query:</label>
+                <input type="text" name="query" value="{{ form_data.get('query', '') or request.args.get('q', '') }}"
+                       placeholder="e.g. pasta, chicken, salad">
+            </div>
+
+            <div>
+                <label>Diet:</label>
+                <select name="diet">
+                    <option value="">-- Any --</option>
+                    {% for option in ['vegetarian', 'vegan', 'paleo', 'ketogenic'] %}
+                        <option value="{{ option }}" {% if form_data.get(
+                    'diet') == option %}selected{% endif %}>{{ option.capitalize() }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div>
+                <label>Cuisine:</label>
+                <div class="search-bar-autocomplete">
+                    <input type="text" name="cuisine" placeholder="e.g. Italian, Mexican"
+                           value="{{ form_data.get('cuisine', '') }}">
+                </div>
+            </div>
+
+            <div>
+                <label>Intolerances:</label>
+                <div class="search-bar-autocomplete">
+                    <input type="text" name="intolerances" placeholder="e.g. dairy, gluten"
+                           value="{{ form_data.get('intolerances', '') }}">
+                </div>
+            </div>
+
+            <div>
+                <label>Inlude Ingredients:</label>
+                <div class="search-bar-autocomplete">
+                    <input type="text" name="includeIngredients" placeholder="e.g. butter, apple"
+                           value="{{ form_data.get('includeIngredients', '') }}">
+                </div>
+            </div>
+
+            <div>
+                <label>Exclude Ingredients:</label>
+                <div class="search-bar-autocomplete">
+                    <input type="text" name="excludeIngredients" placeholder="e.g. nuts, shellfish"
+                           value="{{ form_data.get('excludeIngredients', '') }}">
+                </div>
+            </div>
+
+            <div>
+                <label>Max Ready Time (minutes):</label>
+                <input type="number" name="maxReadyTime" min="0" value="{{ form_data.get('maxReadyTime', '') }}">
+            </div>
+
             <button class="btn" type="submit">Search</button>
         </form>
 
-        <!-- Search by Ingredients Form -->
-        <form class="search-form" method="POST">
-            <div class="search-bar-autocomplete">
-                <input type="text" name="ingredients" placeholder="Enter ingredients (comma-separated)"
-                       value="{{ ingredients }}">
+        {% if recipes %}
+            <h2>Results</h2>
+            <div class="search-results">
+                {% for recipe in recipes %}
+                    <a class="card" href="{{ url_for('browse.recipe_details', recipe_id=recipe.id) }}">
+                        <h3>{{ recipe.title }}</h3>
+                        <img src="{{ recipe.image }}" alt="{{ recipe.title }}">
+                        {% if recipe.readyInMinutes %}
+                            <p>Ready in {{ recipe.readyInMinutes }} min</p>
+                        {% endif %}
+                        {#                        <a href="https://spoonacular.com/recipes/{{ recipe.title | replace(' ', '-') }}-{{ recipe.id }}"#}
+                        {#                           target="_blank">View</a>#}
+                    </a>
+                {% endfor %}
             </div>
-            <button class="btn" type="submit">Search by Ingredients</button>
-        </form>
-
-        <div class="search-filters">
-            <select name="category">
-                <option value="">All Categories</option>
-                <option value="reports">Reports</option>
-                <option value="users">Users</option>
-            </select>
-
-            <select name="sort">
-                <option value="relevance">Sort by Relevance</option>
-                <option value="recent">Most Recent</option>
-            </select>
-        </div>
-
-        <div class="search-results">
-            {% for recipe in recipes %}
-                <a class="card" href="{{ url_for('browse.recipe_details', recipe_id=recipe.id) }}">
-                    <img src="{{ recipe.image }}" alt="{{ recipe.title }}"
-                         style="max-width: 100px; max-height: 100px;">
-                    {{ recipe.title }}
-                </a>
-            {% endfor %}
-        </div>
+        {% endif %}
     </div>
 {% endblock %}

@@ -36,7 +36,7 @@ class SpoonacularAPI:
 
         if response.status_code == 200:
             # Cache ingredients from the recipe data
-            self._cache_ingredients_from_recipe(response.json())
+            self._cache_ingredients_from_recipes(response.json())
 
         return response
 
@@ -52,7 +52,7 @@ class SpoonacularAPI:
         response.raise_for_status()  # Fehler werfen, falls die Anfrage fehlschlägt
 
         # Cache ingredients from the recipe data
-        self._cache_ingredients_from_recipe(response.json())
+        self._cache_ingredients_from_recipes(response.json())
 
         return response.json()
 
@@ -75,7 +75,7 @@ class SpoonacularAPI:
         response.raise_for_status()
 
         # Cache ingredients from the recipe data
-        self._cache_ingredients_from_recipe(response.json())
+        self._cache_ingredients_from_recipes(response.json())
 
         return response.json()
 
@@ -140,7 +140,7 @@ class SpoonacularAPI:
         db.session.commit()
 
         # Cache ingredients from the recipe data
-        self._cache_ingredients_from_recipe(data)
+        self._cache_ingredients_from_recipes([data])
 
         return data
 
@@ -205,7 +205,13 @@ class SpoonacularAPI:
 
         return results
 
-    def _cache_ingredients_from_recipe(self, recipe_data):
+    def _cache_ingredients_from_recipes(self, recipe_data):
+        """
+        Extracts ingredients from recipe data and caches them in the database.
+        :param recipe_data: List of recipe dictionaries, each containing ingredient information.
+            May also have the recipe-list nested under a 'results' key.
+        :return: None
+        """
         if 'results' in recipe_data:
             recipe_data = recipe_data["results"]
 

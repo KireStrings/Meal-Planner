@@ -77,6 +77,15 @@ document.addEventListener('DOMContentLoaded', function() {
         return cuisineSuggestions.filter(c => c.toLowerCase().includes(query.toLowerCase()));
     }, 0);
 
+    const dietInput = document.querySelector('input[name="diet"]');
+    initAutoComplete(dietInput, function(query) {
+        const dietSuggestions = [
+            'Gluten Free', 'Ketogenic', 'Vegetarian', 'Lacto-Vegetarian', 'Ovo-Vegetarian',
+            'Vegan', 'Pescetarian', 'Paleo', 'Primal', 'Low FODMAP', 'Whole30'
+        ];
+        return dietSuggestions.filter(c => c.toLowerCase().includes(query.toLowerCase()));
+    }, 0);
+
     const intoleranceInput = document.querySelector('input[name="intolerances"]');
     initAutoComplete(intoleranceInput, function(query) {
         const intoleranceSuggestions = [

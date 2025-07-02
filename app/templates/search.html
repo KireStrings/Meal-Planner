@@ -19,13 +19,10 @@
 
             <div>
                 <label>Diet:</label>
-                <select name="diet">
-                    <option value="">-- Any --</option>
-                    {% for option in ['vegetarian', 'vegan', 'paleo', 'ketogenic'] %}
-                        <option value="{{ option }}" {% if form_data.get(
-                    'diet') == option %}selected{% endif %}>{{ option.capitalize() }}</option>
-                    {% endfor %}
-                </select>
+                <div class="search-bar-autocomplete">
+                    <input type="text" name="diet" placeholder="e.g. vegan, paleo"
+                           value="{{ form_data.get('diet', '') }}">
+                </div>
             </div>
 
             <div>

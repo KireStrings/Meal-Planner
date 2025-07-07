@@ -8,7 +8,7 @@ const macrosByDiet = {
 };
 
 let selectedDiet = "Anything";
-let latestMealPlan = {}; // Store the last generated meal plan for saving
+let latestMealPlan = {}; // Store last generated meal plan for saving
 
 document.addEventListener("DOMContentLoaded", function () {
   const buttons = document.querySelectorAll(".diet");
@@ -46,6 +46,11 @@ document.addEventListener("DOMContentLoaded", function () {
       })
     });
 
+    if (!res.ok) {
+      alert("Failed to generate meal plan.");
+      return;
+    }
+
     const data = await res.json();
     latestMealPlan = data; // Save the plan for saving later
     const resultsContainer = document.getElementById("recipe-results");
@@ -73,7 +78,7 @@ document.addEventListener("DOMContentLoaded", function () {
           <div class="meal-item">
             <img src="${r.image}" alt="${r.title}">
             <div>
-              <a href="${r.sourceUrl}" target="_blank">${r.title}</a><br>
+              <a href="${r.sourceUrl}" target="_blank" rel="noopener noreferrer">${r.title}</a><br>
               <span>1 serving</span><br>
               <button class="save-recipe-btn" data-recipe='${JSON.stringify({
                 id: r.id,
@@ -81,7 +86,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 image: r.image,
                 sourceUrl: r.sourceUrl,
                 nutrition: r.nutrition || null
-              })}'>💾 Save</button>
+              }).replace(/'/g, "&apos;")}'>💾 Save</button>
             </div>
           </div>
         `;
@@ -110,7 +115,7 @@ document.addEventListener("DOMContentLoaded", function () {
     resultsContainer.appendChild(savePlanBtn);
   });
 
-  // Delegate button clicks
+  // Delegate button clicks inside recipe-results
   document.getElementById("recipe-results").addEventListener("click", async (e) => {
     // Save individual recipe
     if (e.target.classList.contains("save-recipe-btn")) {

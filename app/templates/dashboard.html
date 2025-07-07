@@ -3,7 +3,7 @@
 
 {% block head %}
     <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
-    <script src="{{ url_for('static', filename='dashboard.js') }}"></script>
+    <script src="{{ url_for('static', filename='dashboard.js') }}" defer></script>
 {% endblock %}
 
 {% block content %}
@@ -65,20 +65,5 @@
 
     <!-- Container for results -->
     <div id="recipe-results"></div>
-
-    <div>
-      <button class="save-btn" style="display: none;">Save</button>
-    </div>
-
-    <div id="saveModal" class="modal">
-      <div class="modal-content">
-        <span class="close">&times;</span>
-        <h3>Save Meal Plan</h3>
-        <label for="planTitle">Title:</label>
-        <input type="text" id="planTitle" placeholder="e.g. My Keto Week Plan">
-        <button id="submitSave">Save</button>
-      </div>
-    </div>
-
   </main>
 {% endblock %}

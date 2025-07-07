@@ -1,4 +1,5 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='components/Sidebar.css') }}">
+<script defer src="{{ url_for('static', filename='components/Sidebar.js') }}"></script>
 
 <div class="sidebar">
     <div class="header">
@@ -10,7 +11,7 @@
 
     <div class="search-bar">
         <a href="/search">{{ icon('search', 'search-icon') }}</a>
-        <input type="text" placeholder="Search for...">
+        <input type="search" value="{{ request.form.get('query', '') or request.args.get('q', '') }}" placeholder="Search for...">
     </div>
 
     <div class="menu">

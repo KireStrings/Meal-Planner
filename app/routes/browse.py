@@ -9,20 +9,23 @@ browse = Blueprint('browse', __name__)
 @login_required
 def search():
     recipes = []
-    query = ''
-    ingredients = ''
     api_key = current_app.config['SPOONACULAR_API_KEY']
     spoonacular = SpoonacularAPI(api_key)
 
-    if request.method == 'POST':
-        if 'query' in request.form:  # Search by query
-            query = request.form.get('query')
-            recipes = spoonacular.search_recipes(query).get('results', [])
-        elif 'ingredients' in request.form:  # Search by ingredients
-            ingredients = request.form.get('ingredients')
-            recipes = spoonacular.search_recipes_with_ingredients(ingredients).get('results', [])
+    if request.method == 'POST' or request.args.get('q'):
+        query_params = {
+            "query": request.form.get("query") or request.args.get('q'),
+            "diet": request.form.get("diet") or None,
+            "intolerances": request.form.get("intolerances") or None,
+            "cuisine": request.form.get("cuisine") or None,
+            "excludeIngredients": request.form.get("excludeIngredients") or None,
+            "maxReadyTime": request.form.get("maxReadyTime") or None,
+            "number": 10,
+            "addRecipeInformation": True
+        }
+        recipes = spoonacular.search_recipes_by_params(query_params).json().get('results', [])
 
-    return render_template('search.html', recipes=recipes, query=query, ingredients=ingredients)
+    return render_template('search.html', recipes=recipes, form_data=request.form)
 
 @browse.route('/autocomplete', methods=['GET'])
 @login_required
@@ -47,4 +50,5 @@ def recipe_details(recipe_id):
     api_key = current_app.config['SPOONACULAR_API_KEY']
     spoonacular = SpoonacularAPI(api_key)
     recipe_info = spoonacular.get_recipe_information(recipe_id)
+    print('recipe_info', recipe_info)
     return render_template('recipe_details.html', recipe=recipe_info)

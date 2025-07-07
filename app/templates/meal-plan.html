@@ -1,60 +1,42 @@
 {% extends 'base.html' %}
-{% block title %}Meal Planner{% endblock %}
-
-{% block head %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='meal_plan.css') }}"/>
-    <script src="{{ url_for('static', filename='meal_plan.js') }}"></script>
-{% endblock %}
-
 {% block content %}
-    <h1>Meal Planner</h1>
-    <div class="table-container">
-        <!-- Include your meal table HTML here -->
-        <table class="meal-table">
-            <thead>
-            <tr>
-                <th>Monday</th>
-                <th>Tuesday</th>
-                <th>Wednesday</th>
-                <th>Thursday</th>
-                <th>Friday</th>
-                <th>Saturday</th>
-                <th>Sunday</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>Cell text</td>
-                <td>Cell text</td>
-                <td>Cell text</td>
-                <td>Cell text</td>
-                <td>Cell text</td>
-                <td>Cell text</td>
-                <td>Cell text</td>
-            </tr>
-            <tr>
-                <td>Cell text</td>
-                <td>Cell text</td>
-                <td>Cell text</td>
-                <td>Cell text</td>
-                <td>Cell text</td>
-                <td>Cell text</td>
-                <td>Cell text</td>
-            </tr>
-            <tr>
-                <td>Cell text</td>
-                <td>Cell text</td>
-                <td>Cell text</td>
-                <td>Cell text</td>
-                <td>Cell text</td>
-                <td>Cell text</td>
-                <td>Cell text</td>
-            </tr>
-            <!-- Add more meal rows -->
-            <tr>
-                <td colspan="7" class="week-range">18/05/2025 - 24/05/2025</td>
-            </tr>
-            </tbody>
-        </table>
+
+<div class="container mt-4">
+  <h2>Your Meal Plans</h2>
+
+  {% for plan in meal_plans %}
+    <div class="card mb-3">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <span>{{ plan.title }}</span>
+        <button class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#recipes-{{ plan.id }}">
+          View Recipes
+        </button>
+      </div>
+      
+      <div id="recipes-{{ plan.id }}" class="collapse">
+        <ul class="list-group list-group-flush">
+          {% for recipe in plan.recipes %}
+            <li class="list-group-item">
+              <strong>{{ recipe.title }}</strong><br>
+              Ready in {{ recipe.ready_in_minutes }} minutes • Serves {{ recipe.servings }}
+              {% if recipe.image_url %}
+                <div class="mt-2">
+                  <img src="{{ recipe.image_url }}" alt="{{ recipe.title }}" style="max-width: 150px;">
+                </div>
+              {% endif %}
+              {% if recipe.summary %}
+                <p class="mt-2">{{ recipe.summary|safe }}</p>
+              {% endif %}
+            </li>
+          {% else %}
+            <li class="list-group-item text-muted">No recipes in this meal plan.</li>
+          {% endfor %}
+        </ul>
+      </div>
     </div>
+  {% else %}
+    <p>You have no meal plans yet.</p>
+  {% endfor %}
+</div>
+
 {% endblock %}

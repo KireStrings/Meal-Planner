@@ -1,36 +1,24 @@
-h1 {
-  margin-bottom: 20px; /* adjust the value as you like */
+.saved-plans {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
-.meal-table {
-  width: 100%;
-  border-collapse: collapse;
+.meal-plan-card {
+  border: 1px solid #ddd;
+  padding: 15px;
+  border-radius: 10px;
+  background-color: #fafafa;
 }
 
-.meal-table th {
-  padding: 12px;
-  border-top: 1px solid #ddd;
-  border-bottom: 1px solid #ddd;
+.meal-plan-card h2 {
+  margin: 0 0 10px;
 }
 
-.meal-table td {
-  padding-top: 90px;
-  padding-bottom: 90px;
+.meal-plan-card ul {
   padding-left: 20px;
-  padding-right: 20px;
-  min-height: 150px;
-  text-align: center;
-  border-top: 1px solid #ddd;
-  border-bottom: 1px solid #ddd;
 }
 
-.week-range {
-  text-align: center;
-  font-weight: bold;
-  padding: 4px 10px !important;
-  line-height: 1.2;
-  border-top: 2px solid #aaa;
-  border-bottom: 2px solid #aaa;
-  height: 1px;
+.meal-plan-card li {
+  margin-bottom: 5px;
 }
-

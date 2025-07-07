@@ -4,6 +4,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
 from jinja2 import pass_context
+from dotenv import load_dotenv
+load_dotenv(override=True)
 
 db = SQLAlchemy()
 migrate = Migrate()

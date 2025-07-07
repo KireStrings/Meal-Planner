@@ -13,7 +13,7 @@ dessert_drinks_page = Blueprint("dessert_drinks_page", __name__)
 def dessert_view():
     return render_template('dessert_drinks_page.html')
 # Spoonacular API key and base URL
-API_KEY = os.getenv("SPOONACULAR_API_KEY", "09cecb76996e47ecab4383edff96eaa5")
+API_KEY = os.getenv("SPOONACULAR_API_KEY", "your-api-key-here")
 BASE_URL = "https://api.spoonacular.com/recipes/complexSearch"
 
 def fetch_recipes(recipe_type, number, max_calories):

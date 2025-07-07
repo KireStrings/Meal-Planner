@@ -1,5 +1,7 @@
 from flask import Blueprint, current_app, request, render_template
 from flask_login import login_required, current_user
+from .recipes import get_saved_recipes_for_user
+from . import browse
 
 from ..spoonacular import SpoonacularAPI
 
@@ -39,9 +41,16 @@ def autocomplete():
 @browse.route('/recipes')
 @login_required
 def recipes():
-    api_key = current_app.config['SPOONACULAR_API_KEY']
-    spoonacular = SpoonacularAPI(api_key)
-    recipes = spoonacular.get_saved_recipes(current_user.id)
+    sort_by = request.args.get('sort', 'relevance')
+    recipes = get_saved_recipes_for_user(current_user.id)
+
+    if sort_by == 'recent':
+        # Assuming recipes have a "saved_date" field or similar
+        recipes = sorted(recipes, key=lambda r: r['saved_date'], reverse=True)
+    else:
+        # Default: relevance or alphabetical by title
+        recipes = sorted(recipes, key=lambda r: r['title'].lower())
+
     return render_template('recipes.html', recipes=recipes)
 
 @browse.route('/recipe/<int:recipe_id>')

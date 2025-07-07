@@ -1,10 +1,11 @@
 from datetime import datetime
 from flask import Blueprint, render_template, request, jsonify, session, current_app
 from flask_login import login_required, current_user
-from ..models import Recipe, db, MealPlan
+from ..models import Recipe, db, MealPlan, UserSavedRecipe
 import random
 import hashlib
 from ..spoonacular import SpoonacularAPI
+import json
 
 dashboard = Blueprint('dashboard', __name__)
 
@@ -194,32 +195,75 @@ def save_meal_plan():
         return jsonify({'error': 'Meal plan data is missing'}), 400
 
     try:
-        # You may wish to assign a main recipe here; otherwise set to None
-        first_valid_recipe = None
-        for recipes in meal_plan_data.values():
-            if isinstance(recipes, list) and recipes:
-                first_valid_recipe = recipes[0]
-                break
-
         new_plan = MealPlan(
             title=plan_title,
             _input_date=datetime.utcnow())
 
-        for day_recipes in meal_plan_data.values():
-            for recipe_data in day_recipes:
-                recipe = Recipe.query.get(recipe_data['id'])
-                if recipe:
-                    new_plan.recipes.append(recipe)
-
         current_user.meal_plans.append(new_plan)
-
         db.session.add(new_plan)
-        db.session.flush()  # Ensure the MealPlan ID is available
-
-
         db.session.commit()
+
         return jsonify({'message': 'Meal plan saved successfully', 'mealPlanId': new_plan.id}), 200
 
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': f'Failed to save meal plan: {str(e)}'}), 500
+
+@dashboard.route("/save_recipe", methods=["POST"])
+@login_required
+def save_recipe():
+    data = request.get_json()
+
+    if not data:
+        return jsonify({"error": "No data provided"}), 400
+
+    try:
+        recipe_id = data["id"]
+        title = data["title"]
+        image_url = data.get("image") or data.get("image_url")
+        source_url = data.get("sourceUrl")
+        source_name = data.get("sourceName", "")
+        summary = data.get("summary", "")
+        instructions = data.get("instructions", "")
+        ingredients = data.get("ingredients", [])
+        ready_in_minutes = data.get("readyInMinutes", 0)
+        servings = data.get("servings", 1)
+
+        # 1. Check if the recipe exists
+        recipe = Recipe.query.get(recipe_id)
+        if not recipe:
+            # 2. Create a new Recipe entry
+            recipe = Recipe(
+                id=recipe_id,
+                title=title,
+                image_url=image_url,
+                source_url=source_url,
+                source_name=source_name,
+                summary=summary,
+                instructions=instructions,
+                ingredients=json.dumps(ingredients),
+                ready_in_minutes=ready_in_minutes,
+                servings=servings
+            )
+            db.session.add(recipe)
+
+        # 3. Check if user already saved this recipe
+        existing_link = UserSavedRecipe.query.filter_by(
+            user_id=current_user.id,
+            recipe_id=recipe_id
+        ).first()
+
+        if not existing_link:
+            link = UserSavedRecipe(
+                user_id=current_user.id,
+                recipe_id=recipe_id,
+                saved_at=dt.now(tz.utc)
+            )
+            db.session.add(link)
+
+        db.session.commit()
+        return jsonify({"message": "Recipe saved successfully"})
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500

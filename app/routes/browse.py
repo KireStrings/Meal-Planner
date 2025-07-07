@@ -1,5 +1,5 @@
 from flask import Blueprint, current_app, request, render_template
-from flask_login import login_required
+from flask_login import login_required, current_user
 
 from ..spoonacular import SpoonacularAPI
 
@@ -38,7 +38,7 @@ def autocomplete():
 def recipes():
     api_key = current_app.config['SPOONACULAR_API_KEY']
     spoonacular = SpoonacularAPI(api_key)
-    recipes = spoonacular.get_saved_recipes()
+    recipes = spoonacular.get_saved_recipes(current_user.id)
     return render_template('recipes.html', recipes=recipes)
 
 @browse.route('/recipe/<int:recipe_id>')

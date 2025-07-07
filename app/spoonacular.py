@@ -4,6 +4,7 @@ import requests
 from flask import jsonify
 from sqlalchemy import func
 
+from .models import Recipe, UserSavedRecipe
 from . import db
 from .models import Recipe, Ingredient
 
@@ -79,9 +80,11 @@ class SpoonacularAPI:
 
         return response.json()
 
-    def get_saved_recipes(self):
-        """Hole alle Rezepte aus der Datenbank."""
-        recipes = Recipe.query.all()
+    def get_saved_recipes(self, user_id):
+        # Get all Recipe objects that this user saved individually
+        saved_recipe_ids = db.session.query(UserSavedRecipe.recipe_id).filter_by(user_id=user_id).subquery()
+        recipes = Recipe.query.filter(Recipe.id.in_(saved_recipe_ids)).all()
+
         return [
             {
                 "id": recipe.id,

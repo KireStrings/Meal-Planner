@@ -248,7 +248,7 @@ def save_recipe():
         ready_in_minutes = data.get("readyInMinutes", 0)
         servings = data.get("servings", 1)
 
-        # Check if the recipe exists
+        # Ensure the recipe exists in the Recipe table
         recipe = Recipe.query.get(recipe_id)
         if not recipe:
             recipe = Recipe(
@@ -265,22 +265,25 @@ def save_recipe():
             )
             db.session.add(recipe)
 
-        # Check if user already saved this recipe
+        # Check if the user already saved it
         existing_link = UserSavedRecipe.query.filter_by(
             user_id=current_user.id,
             recipe_id=recipe_id
         ).first()
 
-        if not existing_link:
-            link = UserSavedRecipe(
-                user_id=current_user.id,
-                recipe_id=recipe_id,
-                saved_at=datetime.now(pytz.utc)  # Correct datetime usage
-            )
-            db.session.add(link)
+        if existing_link:
+            return jsonify({"message": "Recipe already saved"}), 409  # 409 Conflict
 
+        # Save link between user and recipe
+        link = UserSavedRecipe(
+            user_id=current_user.id,
+            recipe_id=recipe_id,
+            saved_at=datetime.now(pytz.utc)
+        )
+        db.session.add(link)
         db.session.commit()
-        return jsonify({"message": "Recipe saved successfully"})
+
+        return jsonify({"message": "Recipe saved successfully"}), 201  # 201 Created
 
     except Exception as e:
         db.session.rollback()

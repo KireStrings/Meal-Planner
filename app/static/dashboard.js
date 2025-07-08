@@ -120,25 +120,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Save individual recipe
     if (e.target.classList.contains("save-recipe-btn")) {
       const recipeData = JSON.parse(e.target.dataset.recipe);
-
-      try {
-        const saveRes = await fetch("/save_recipe", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(recipeData)
-        });
-
-        if (saveRes.ok) {
-          e.target.textContent = "Saved!";
-          e.target.disabled = true;
-        } else {
-          const errorData = await saveRes.json();
-          alert(`Failed to save recipe: ${errorData.error || "Unknown error"}`);
-        }
-      } catch (err) {
-        console.error("Error saving recipe:", err);
-        alert("An error occurred while saving the recipe.");
-      }
+      await saveRecipe(recipeData, e.target);
     }
 
     // Save entire meal plan
@@ -183,3 +165,36 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+  const saveBtn = document.getElementById("details-save-btn");
+
+  if (saveBtn) {
+    const recipe = JSON.parse(saveBtn.getAttribute("data-recipe"));
+    saveBtn.addEventListener("click", () => saveRecipe(recipe));
+  }
+});
+
+async function saveRecipe(recipeData) {
+  try {
+    const res = await fetch("/save_recipe", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(recipeData),
+    });
+
+    const result = await res.json();
+
+    if (res.status === 201) {
+      alert("✅ Recipe saved successfully!");
+    } else if (res.status === 409) {
+      alert("⚠️ Recipe already saved.");
+    } else {
+      alert("❌ Error: " + (result.error || "Something went wrong."));
+    }
+  } catch (err) {
+    console.error("Save error:", err);
+    alert("❌ An error occurred while saving the recipe.");
+  }
+}
+

@@ -5,6 +5,7 @@ from ..models import Recipe, db, MealPlan, UserSavedRecipe
 import random
 import hashlib
 from ..spoonacular import SpoonacularAPI
+import pytz
 import json
 
 dashboard = Blueprint('dashboard', __name__)
@@ -188,8 +189,8 @@ def generate_meal_plan():
 @login_required
 def save_meal_plan():
     data = request.get_json()
-    meal_plan_data = data.get('mealPlan', {})
-    plan_title = data.get('planTitle', f"{current_user.username}'s plan")
+    meal_plan_data = data.get('plan', {})
+    plan_title = data.get('title', f"{current_user.username}'s plan")
 
     if not meal_plan_data:
         return jsonify({'error': 'Meal plan data is missing'}), 400
@@ -197,7 +198,23 @@ def save_meal_plan():
     try:
         new_plan = MealPlan(
             title=plan_title,
-            _input_date=datetime.utcnow())
+            _input_date=datetime.utcnow()
+        )
+
+        # Extract recipe IDs from nested meal data
+        recipe_ids = []
+        for meal_list in meal_plan_data.values():  # breakfast/lunch/dinner
+            if isinstance(meal_list, list):
+                for recipe in meal_list:
+                    rid = recipe.get('id')
+                    if rid:
+                        recipe_ids.append(rid)
+
+        # Attach valid recipes to the meal plan
+        for rid in recipe_ids:
+            recipe = Recipe.query.get(rid)
+            if recipe:
+                new_plan.recipes.append(recipe)
 
         current_user.meal_plans.append(new_plan)
         db.session.add(new_plan)
@@ -207,7 +224,9 @@ def save_meal_plan():
 
     except Exception as e:
         db.session.rollback()
+        current_app.logger.error(f"Error saving meal plan: {str(e)}")
         return jsonify({'error': f'Failed to save meal plan: {str(e)}'}), 500
+
 
 @dashboard.route("/save_recipe", methods=["POST"])
 @login_required
@@ -229,10 +248,9 @@ def save_recipe():
         ready_in_minutes = data.get("readyInMinutes", 0)
         servings = data.get("servings", 1)
 
-        # 1. Check if the recipe exists
+        # Check if the recipe exists
         recipe = Recipe.query.get(recipe_id)
         if not recipe:
-            # 2. Create a new Recipe entry
             recipe = Recipe(
                 id=recipe_id,
                 title=title,
@@ -247,7 +265,7 @@ def save_recipe():
             )
             db.session.add(recipe)
 
-        # 3. Check if user already saved this recipe
+        # Check if user already saved this recipe
         existing_link = UserSavedRecipe.query.filter_by(
             user_id=current_user.id,
             recipe_id=recipe_id
@@ -257,7 +275,7 @@ def save_recipe():
             link = UserSavedRecipe(
                 user_id=current_user.id,
                 recipe_id=recipe_id,
-                saved_at=dt.now(tz.utc)
+                saved_at=datetime.now(pytz.utc)  # Correct datetime usage
             )
             db.session.add(link)
 

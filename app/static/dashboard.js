@@ -147,12 +147,25 @@ document.addEventListener("DOMContentLoaded", function () {
         const planTitle = prompt("Enter a title for this meal plan:");
         if (!planTitle) return;
 
-        const response = await fetch("/save_mealplan", {
+        // Filter only non-empty meals
+        const filteredPlan = {};
+        for (const [meal, recipes] of Object.entries(latestMealPlan)) {
+          if (Array.isArray(recipes) && recipes.length > 0) {
+            filteredPlan[meal] = recipes;
+          }
+        }
+
+        if (Object.keys(filteredPlan).length === 0) {
+          alert("Meal plan is empty. Nothing to save.");
+          return;
+        }
+
+        const response = await fetch("/save_plan", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             title: planTitle,
-            plan: latestMealPlan
+            plan: filteredPlan
           })
         });
 

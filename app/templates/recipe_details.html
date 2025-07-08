@@ -3,6 +3,7 @@
 
 {% block head %}
     <link rel="stylesheet" href="{{ url_for('static', filename='recipe_details.css') }}">
+    <script src="{{ url_for('static', filename='dashboard.js') }}" defer></script>
 {% endblock %}
 
 {% block content %}
@@ -37,7 +38,7 @@
         </div>
 
         <div class="details-actions">
-            <button class="btn">Save</button>
+            <button class="btn" id="details-save-btn" data-recipe='{{ recipe | tojson | safe }}'>Save</button>
             {% if recipe.source_url and recipe.source_name %}
                 <a class="btn link" href="{{ recipe.source_url }}">{{ icon('external-link') }}{{ recipe.source_name }}</a>
             {% else %}

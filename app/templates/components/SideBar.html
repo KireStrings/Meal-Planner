@@ -15,13 +15,17 @@
     </div>
 
     <div class="menu">
+        <a href="{{ url_for('main.dashboard') }}" class="menu-item {{ 'active' if current_page == 'main.dashboard' else '' }}">
+            {{ icon('home') }}
+            <div class="menu-text">Meal Planner</div>
+        </a>
         <a href="{{ url_for('dessert_drinks_page.dessert_view') }}" class="menu-item {{ 'active' if current_page == 'dessert_drinks_page.dessert_view' else '' }}">
             {{ icon('cupcake') }}
             <div class="menu-text">Dessert/Drinks</div>
         </a>
         <a href="/my-plan" class="menu-item {{ 'active' if current_page == 'meal_plan.my_plan' else '' }}">
             {{ icon('calendar') }}
-            <div class="menu-text">Meal Planner</div>
+            <div class="menu-text">Your Meal Plans</div>
         </a>
         <a href="/recipes" class="menu-item {{ 'active' if current_page == 'browse.recipes' else '' }}">
             {{ icon('book') }}

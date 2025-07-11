@@ -38,7 +38,10 @@
         </div>
 
         <div class="details-actions">
-            <button class="btn" id="details-save-btn" data-recipe='{{ recipe | tojson | safe }}'>Save</button>
+            <button class="btn btn-primary" id="details-save-btn" data-recipe='{{ recipe | tojson | safe }}'>
+                {{ icon('saved' if recipe.saved else "save") }}
+                {{ "Saved" if recipe.saved else "Save" }}
+            </button>
             {% if recipe.source_url and recipe.source_name %}
                 <a class="btn link" href="{{ recipe.source_url }}">{{ icon('external-link') }}{{ recipe.source_name }}</a>
             {% else %}

@@ -171,7 +171,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (saveBtn) {
     const recipe = JSON.parse(saveBtn.getAttribute("data-recipe"));
-    saveBtn.addEventListener("click", () => saveRecipe(recipe));
+    saveBtn.addEventListener("click", async () => {
+      await saveRecipe(recipe);
+      window.location.reload();
+    });
   }
 });
 
@@ -188,7 +191,21 @@ async function saveRecipe(recipeData) {
     if (res.status === 201) {
       alert("✅ Recipe saved successfully!");
     } else if (res.status === 409) {
-      alert("⚠️ Recipe already saved.");
+      // ask if the already saved recipe should be unsaved
+      if (confirm("This recipe is already saved. Do you want to unsave it?")) {
+          const unsaveRes = await fetch("/unsave_recipe", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ id: recipeData.id }),
+          });
+
+          if (unsaveRes.ok) {
+              alert("✅ Recipe unsaved successfully!");
+          } else {
+              const unsaveResult = await unsaveRes.json();
+              alert("❌ Error unsaving recipe: " + (unsaveResult.error || "Something went wrong."));
+          }
+      }
     } else {
       alert("❌ Error: " + (result.error || "Something went wrong."));
     }

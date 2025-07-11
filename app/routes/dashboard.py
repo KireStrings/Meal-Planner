@@ -288,3 +288,35 @@ def save_recipe():
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
+
+@dashboard.route("/unsave_recipe", methods=["POST"])
+@login_required
+def unsave_recipe():
+    data = request.get_json()
+
+    if not data:
+        return jsonify({"error": "No data provided"}), 400
+
+    try:
+        recipe_id = data.get("id")
+        if not recipe_id:
+            return jsonify({"error": "Recipe ID is required"}), 400
+
+        # Find the saved recipe link
+        saved_recipe = UserSavedRecipe.query.filter_by(
+            user_id=current_user.id,
+            recipe_id=recipe_id
+        ).first()
+
+        if not saved_recipe:
+            return jsonify({"message": "Recipe not found in saved recipes"}), 404
+
+        # Remove the link
+        db.session.delete(saved_recipe)
+        db.session.commit()
+
+        return jsonify({"message": "Recipe unsaved successfully"}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500

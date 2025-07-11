@@ -2,11 +2,11 @@ import json
 
 import requests
 from flask import jsonify
+from flask_login import current_user
 from sqlalchemy import func
 
-from .models import Recipe, UserSavedRecipe
 from . import db
-from .models import Recipe, Ingredient
+from .models import Recipe, Ingredient, UserSavedRecipe
 
 
 class SpoonacularAPI:
@@ -102,10 +102,16 @@ class SpoonacularAPI:
         ]
 
     def get_recipe_information(self, recipe_id):
-        """Hole detaillierte Informationen zu einem Rezept."""
+        """
+        Hole detaillierte Informationen zu einem Rezept.
+        :param recipe_id: The recipe ID.
+        :return: JSON recipe information.
+        """
         # Check if the recipe is already in the database
         recipe = Recipe.query.get(recipe_id)
+        #Check if recipe is in user_saved_recipes
         if recipe:
+            saved = recipe.id in map((lambda recipe: recipe['id']), self.get_saved_recipes(current_user.id))
             return {
                 "id": recipe.id,
                 "title": recipe.title,
@@ -116,7 +122,8 @@ class SpoonacularAPI:
                 "extendedIngredients": json.loads(recipe.ingredients),
                 "image": recipe.image_url,
                 "source_name": recipe.source_name,
-                "source_url": recipe.source_url
+                "source_url": recipe.source_url,
+                "saved": saved
             }
 
         # If not, fetch from the API

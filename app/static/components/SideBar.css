@@ -33,6 +33,12 @@
     align-items: flex-end;
 }
 
+.logo-title .icon svg {
+    height: 1em;
+    width: 1em;
+    vertical-align: top;
+}
+
 .logo-title {
     color: #697077;
     font-size: 24px;

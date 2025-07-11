@@ -7,6 +7,12 @@ header h1 {
     margin-bottom: 2em;
 }
 
+header .spoon svg {
+    height: 1.028em;
+    width: 1.028em;
+    vertical-align: top;
+}
+
 .diet-box {
     display: inline-block;
     background: white;

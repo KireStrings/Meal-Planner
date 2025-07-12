@@ -81,9 +81,15 @@ class SpoonacularAPI:
         return response.json()
 
     def get_saved_recipes(self, user_id):
+        """
+        Hole alle Rezepte, die der Benutzer gespeichert hat.
+        :param user_id: The ID of the user whose saved recipes to retrieve.
+        :return: List of saved recipes with their details.
+        """
         # Get all Recipe objects that this user saved individually
-        saved_recipe_ids = db.session.query(UserSavedRecipe.recipe_id).filter_by(user_id=user_id).subquery()
-        recipes = Recipe.query.filter(Recipe.id.in_(saved_recipe_ids)).all()
+        recipes = db.session.query(Recipe, UserSavedRecipe) \
+                   .join(UserSavedRecipe, Recipe.id == UserSavedRecipe.recipe_id) \
+                   .filter_by(user_id=user_id).all()
 
         return [
             {
@@ -96,9 +102,11 @@ class SpoonacularAPI:
                 "extendedIngredients": json.loads(recipe.ingredients),
                 "image": recipe.image_url,
                 "source_name": recipe.source_name,
-                "source_url": recipe.source_url
+                "source_url": recipe.source_url,
+                "saved_at": userSavedRecipe.saved_at,
+                "saved": True  # This is a saved recipe
             }
-            for recipe in recipes
+            for (recipe, userSavedRecipe) in recipes
         ]
 
     def get_recipe_information(self, recipe_id):

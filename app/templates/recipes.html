@@ -3,16 +3,18 @@
 
 {% block head %}
     <link rel="stylesheet" href="{{ url_for('static', filename='search.css') }}">
+    <script src="{{ url_for('static', filename='recipes.js') }}"></script>
 {% endblock %}
 
 {% block content %}
     <h1>Saved Recipes</h1>
 
     <div class="recipes-page">
-        <div class="search-filters">
-            <select name="sort" class="form-select">
-                <option value="relevance">Sort by Relevance</option>
-                <option value="recent">Most Recent</option>
+        <div class="form-group">
+            <label for="sortRecipesBy">Sort by</label>
+            <select name="sort" id="sortRecipesBy" class="form-select">
+                <option value="name" {{ 'selected' if sort_by == 'name' }}>Name</option>
+                <option value="recent" {{ 'selected' if sort_by == 'recent' }}>Most Recent</option>
             </select>
         </div>
 

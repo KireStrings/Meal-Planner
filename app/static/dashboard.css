@@ -26,15 +26,8 @@ header .spoon svg {
     margin: 2em 0;
 }
 
-.diet {
-    padding: 0.5em 1em;
-    margin: 0.2em;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
 .diet.selected {
+    color: white;
     background-color: lightgreen;
 }
 
@@ -42,6 +35,12 @@ header .spoon svg {
 .macro-notes,
 .generate-btn {
     margin: 2em 0;
+}
+
+.calorie-form input,
+.calorie-form select {
+    display: inline-block;
+    width: auto;
 }
 
 .macro-notes li {

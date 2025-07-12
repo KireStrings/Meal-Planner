@@ -80,7 +80,7 @@ document.addEventListener("DOMContentLoaded", function () {
             <div>
               <a href="${r.sourceUrl}" target="_blank" rel="noopener noreferrer">${r.title}</a><br>
               <span>1 serving</span><br>
-              <button class="save-recipe-btn" data-recipe='${JSON.stringify({
+              <button class="btn btn-sm btn-outline-primary save-recipe-btn" data-recipe='${JSON.stringify({
                 id: r.id,
                 title: r.title,
                 image: r.image,
@@ -110,7 +110,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Add "Save Meal Plan" button
     const savePlanBtn = document.createElement("button");
     savePlanBtn.textContent = "💾 Save Meal Plan";
-    savePlanBtn.className = "save-mealplan-btn";
+    savePlanBtn.className = "btn btn-sm btn-outline-primary save-mealplan-btn";
     savePlanBtn.style.marginTop = "20px";
     resultsContainer.appendChild(savePlanBtn);
   });

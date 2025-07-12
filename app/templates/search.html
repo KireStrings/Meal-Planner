@@ -13,14 +13,14 @@
         <form method="POST" class="search-form">
             <div>
                 <label>Search Query:</label>
-                <input type="text" name="query" value="{{ form_data.get('query', '') or request.args.get('q', '') }}"
+                <input type="text" class="form-control" name="query" value="{{ form_data.get('query', '') or request.args.get('q', '') }}"
                        placeholder="e.g. pasta, chicken, salad">
             </div>
 
             <div>
                 <label>Diet:</label>
                 <div class="search-bar-autocomplete">
-                    <input type="text" name="diet" placeholder="e.g. vegan, paleo"
+                    <input type="text" class="form-control" name="diet" placeholder="e.g. vegan, paleo"
                            value="{{ form_data.get('diet', '') }}">
                 </div>
             </div>
@@ -28,7 +28,7 @@
             <div>
                 <label>Cuisine:</label>
                 <div class="search-bar-autocomplete">
-                    <input type="text" name="cuisine" placeholder="e.g. Italian, Mexican"
+                    <input type="text" class="form-control" name="cuisine" placeholder="e.g. Italian, Mexican"
                            value="{{ form_data.get('cuisine', '') }}">
                 </div>
             </div>
@@ -36,7 +36,7 @@
             <div>
                 <label>Intolerances:</label>
                 <div class="search-bar-autocomplete">
-                    <input type="text" name="intolerances" placeholder="e.g. dairy, gluten"
+                    <input type="text" class="form-control" name="intolerances" placeholder="e.g. dairy, gluten"
                            value="{{ form_data.get('intolerances', '') }}">
                 </div>
             </div>
@@ -44,7 +44,7 @@
             <div>
                 <label>Inlude Ingredients:</label>
                 <div class="search-bar-autocomplete">
-                    <input type="text" name="includeIngredients" placeholder="e.g. butter, apple"
+                    <input type="text" class="form-control" name="includeIngredients" placeholder="e.g. butter, apple"
                            value="{{ form_data.get('includeIngredients', '') }}">
                 </div>
             </div>
@@ -52,17 +52,17 @@
             <div>
                 <label>Exclude Ingredients:</label>
                 <div class="search-bar-autocomplete">
-                    <input type="text" name="excludeIngredients" placeholder="e.g. nuts, shellfish"
+                    <input type="text" class="form-control" name="excludeIngredients" placeholder="e.g. nuts, shellfish"
                            value="{{ form_data.get('excludeIngredients', '') }}">
                 </div>
             </div>
 
             <div>
                 <label>Max Ready Time (minutes):</label>
-                <input type="number" name="maxReadyTime" min="3" value="{{ form_data.get('maxReadyTime', '') }}">
+                <input type="number" class="form-control" name="maxReadyTime" min="3" value="{{ form_data.get('maxReadyTime', '') }}">
             </div>
 
-            <button class="btn" type="submit">Search</button>
+            <button class="btn btn-primary" type="submit">Search</button>
         </form>
 
         {% if recipes %}

@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request
+from flask import Flask, request, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
@@ -26,6 +26,11 @@ def create_app():
     @login_manager.user_loader
     def load_user(user_id):
        return User.query.get(int(user_id))
+
+    @app.errorhandler(404)
+    def not_found(e):
+        print(e)
+        return render_template('404.html')
     
     # Register Blueprints
     from .routes.auth import auth

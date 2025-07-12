@@ -1,3 +1,4 @@
+{% from 'macros/favicon.html' import favicon %}
 {% from 'macros/icon.html' import icon %}
 
 <!DOCTYPE html>
@@ -5,6 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {{ favicon() }}
     <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.7/dist/minty/bootstrap.min.css" rel="stylesheet">
     <title>{% block title %}Mealano{% endblock %}</title>
 

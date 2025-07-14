@@ -17,15 +17,17 @@
         <ul class="list-group list-group-flush">
           {% for recipe in plan.recipes %}
             <li class="list-group-item">
-              <a href="{{ url_for('browse.recipe_details', recipe_id=recipe.id) }}">
-                <strong>{{ recipe.title }}</strong>
-              </a><br>
-              Ready in {{ recipe.ready_in_minutes }} minutes • Serves {{ recipe.servings }}
+            <div class="row">
               {% if recipe.image_url %}
-                <div class="mt-2">
-                  <img src="{{ recipe.image_url }}" alt="{{ recipe.title }}" style="max-width: 150px;">
-                </div>
+                <img class="col-auto" src="{{ recipe.image_url }}" alt="{{ recipe.title }}" style="max-width: 150px;">
               {% endif %}
+              <span class="col-auto">
+                <a href="{{ url_for('browse.recipe_details', recipe_id=recipe.id) }}">
+                  <strong>{{ recipe.title }}</strong>
+                </a><br>
+                Ready in {{ recipe.ready_in_minutes }} minutes • Serves {{ recipe.servings }}
+              </span>
+            </div>
               {% if recipe.summary %}
                 <p class="mt-2">{{ recipe.summary|safe }}</p>
               {% endif %}

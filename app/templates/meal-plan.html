@@ -17,7 +17,9 @@
         <ul class="list-group list-group-flush">
           {% for recipe in plan.recipes %}
             <li class="list-group-item">
-              <strong>{{ recipe.title }}</strong><br>
+              <a href="{{ url_for('browse.recipe_details', recipe_id=recipe.id) }}">
+                <strong>{{ recipe.title }}</strong>
+              </a><br>
               Ready in {{ recipe.ready_in_minutes }} minutes • Serves {{ recipe.servings }}
               {% if recipe.image_url %}
                 <div class="mt-2">

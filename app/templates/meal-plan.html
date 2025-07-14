@@ -19,7 +19,9 @@
             <li class="list-group-item">
             <div class="row">
               {% if recipe.image_url %}
-                <img class="col-auto" src="{{ recipe.image_url }}" alt="{{ recipe.title }}" style="max-width: 150px;">
+                <a class="col-auto" href="{{ url_for('browse.recipe_details', recipe_id=recipe.id) }}">
+                    <img src="{{ recipe.image_url }}" alt="{{ recipe.title }}" style="max-width: 150px;">
+                </a>
               {% endif %}
               <span class="col-auto">
                 <a href="{{ url_for('browse.recipe_details', recipe_id=recipe.id) }}">

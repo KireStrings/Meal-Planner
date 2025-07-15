@@ -1,8 +1,6 @@
 from flask import Blueprint, current_app, request, render_template
 from flask_login import login_required, current_user
 from .recipes import get_saved_recipes_for_user
-from . import browse
-
 from ..spoonacular import SpoonacularAPI
 
 browse = Blueprint('browse', __name__)

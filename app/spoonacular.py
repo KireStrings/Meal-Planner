@@ -101,8 +101,8 @@ class SpoonacularAPI:
                 "instructions": recipe.instructions,
                 "extendedIngredients": json.loads(recipe.ingredients),
                 "image": recipe.image_url,
-                "source_name": recipe.source_name,
-                "source_url": recipe.source_url,
+                "sourceName": recipe.source_name,
+                "sourceUrl": recipe.source_url,
                 "saved_at": userSavedRecipe.saved_at,
                 "saved": True  # This is a saved recipe
             }
@@ -129,8 +129,8 @@ class SpoonacularAPI:
                 "instructions": recipe.instructions,
                 "extendedIngredients": json.loads(recipe.ingredients),
                 "image": recipe.image_url,
-                "source_name": recipe.source_name,
-                "source_url": recipe.source_url,
+                "sourceName": recipe.source_name,
+                "sourceUrl": recipe.source_url,
                 'diets': json.loads(recipe.diets),
                 "saved": saved
             }

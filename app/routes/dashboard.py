@@ -201,20 +201,36 @@ def save_meal_plan():
             _input_date=datetime.utcnow()
         )
 
-        # Extract recipe IDs from nested meal data
-        recipe_ids = []
-        for meal_list in meal_plan_data.values():  # breakfast/lunch/dinner
-            if isinstance(meal_list, list):
-                for recipe in meal_list:
-                    rid = recipe.get('id')
-                    if rid:
-                        recipe_ids.append(rid)
+        db.session.add(new_plan)
 
-        # Attach valid recipes to the meal plan
-        for rid in recipe_ids:
-            recipe = Recipe.query.get(rid)
-            if recipe:
-                new_plan.recipes.append(recipe)
+        added_recipe_ids = set()
+
+        for meal_list in meal_plan_data.values():
+            if isinstance(meal_list, list):
+                for recipe_data in meal_list:
+                    rid = recipe_data.get('id')
+                    if not rid or rid in added_recipe_ids:
+                        continue
+
+                    recipe = Recipe.query.get(rid)
+                    if not recipe:
+                        recipe = Recipe(
+                            id=rid,
+                            title=recipe_data.get('title', ''),
+                            image_url=recipe_data.get('image', ''),
+                            source_url=recipe_data.get('sourceUrl', ''),
+                            source_name=recipe_data.get('sourceName', ''),
+                            summary=recipe_data.get('summary', ''),
+                            instructions=json.dumps(recipe_data.get('analyzedInstructions', [])),
+                            ingredients=json.dumps(recipe_data.get('extendedIngredients', [])),
+                            ready_in_minutes=recipe_data.get('readyInMinutes', 0),
+                            servings=recipe_data.get('servings', 1),
+                            diets=json.dumps(recipe_data.get('diets', ''))
+                        )
+                        db.session.add(recipe)
+
+                    new_plan.recipes.append(recipe)
+                    added_recipe_ids.add(rid)
 
         current_user.meal_plans.append(new_plan)
         db.session.add(new_plan)

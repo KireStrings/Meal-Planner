@@ -29,7 +29,7 @@ def generate_meal_plan():
     if request.method == 'POST':
         data = request.get_json()
 
-        diets = data.get('diets', '')
+        diet = data.get('diet', '')
         meals = int(data.get('meals', 3))
         total_calories = int(data.get('calories', 2000))
         min_carbs = data.get('minCarbs', 0)
@@ -95,7 +95,7 @@ def generate_meal_plan():
                     "addRecipeInformation": True,
                     "addRecipeInstructions": False,
                     "addRecipeNutrition": False,
-                    "diets": "" if diets.lower() == "anything" else diets.lower(),
+                    "diet": "" if diet.lower() == "anything" else diet.lower(),
                     "minCalories": min_cal,
                     "maxCalories": max_cal,
                     "sort": "popularity",

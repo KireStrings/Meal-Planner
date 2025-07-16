@@ -131,6 +131,7 @@ class SpoonacularAPI:
                 "image": recipe.image_url,
                 "source_name": recipe.source_name,
                 "source_url": recipe.source_url,
+                'diets': json.loads(recipe.diets),
                 "saved": saved
             }
 
@@ -152,7 +153,8 @@ class SpoonacularAPI:
             ingredients=json.dumps(data.get("extendedIngredients", [])),
             image_url=data.get("image"),
             source_name=data.get("sourceName"),  # Store the source name
-            source_url=data.get("sourceUrl")  # Store the recipe URL
+            source_url=data.get("sourceUrl"),  # Store the recipe URL
+            diets=json.dumps(data.get('diets'))
         )
         db.session.add(new_recipe)
         db.session.commit()

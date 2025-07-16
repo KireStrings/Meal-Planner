@@ -39,7 +39,8 @@ class Recipe(db.Model):
     image_url = db.Column(db.String(500), nullable=True)  # Store the image URL
     source_name = db.Column(db.String(255), nullable=True)  # Store the source name
     source_url = db.Column(db.String(500), nullable=True)  # Store the recipe source URL
-    
+    diets = db.Column(db.String(20), nullable=True)
+
     saved_by_assoc = db.relationship('UserSavedRecipe', backref='recipe', lazy='dynamic')
 
 class UserSavedRecipe(db.Model):

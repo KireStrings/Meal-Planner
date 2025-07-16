@@ -29,7 +29,7 @@ def generate_meal_plan():
     if request.method == 'POST':
         data = request.get_json()
 
-        diet = data.get('diet', '')
+        diets = data.get('diets', '')
         meals = int(data.get('meals', 3))
         total_calories = int(data.get('calories', 2000))
         min_carbs = data.get('minCarbs', 0)
@@ -94,8 +94,8 @@ def generate_meal_plan():
                     "number": 5,
                     "addRecipeInformation": True,
                     "addRecipeInstructions": False,
-                    "addRecipeNutrition": True,
-                    "diet": "" if diet.lower() == "anything" else diet.lower(),
+                    "addRecipeNutrition": False,
+                    "diets": "" if diets.lower() == "anything" else diets.lower(),
                     "minCalories": min_cal,
                     "maxCalories": max_cal,
                     "sort": "popularity",
@@ -162,6 +162,12 @@ def generate_meal_plan():
                 best_recipe = random.choice(fallback_candidates)
 
             if best_recipe:
+                try:
+                    detailed_response = spoonacular.get_recipe_information(best_recipe['id'])
+                    if detailed_response.status_code == 200:
+                        best_recipe = detailed_response.json()
+                except Exception as e:
+                    print(f"Error getting detailed recipe info: {e}")
                 best_hash = generate_recipe_hash(best_recipe)
                 used_hashes.add(best_hash)
                 session["used_recipe_hashes"] = list(used_hashes)
@@ -233,7 +239,6 @@ def save_meal_plan():
                     added_recipe_ids.add(rid)
 
         current_user.meal_plans.append(new_plan)
-        db.session.add(new_plan)
         db.session.commit()
 
         return jsonify({'message': 'Meal plan saved successfully', 'mealPlanId': new_plan.id}), 200
@@ -263,6 +268,7 @@ def save_recipe():
         ingredients = data.get("ingredients", [])
         ready_in_minutes = data.get("readyInMinutes", 0)
         servings = data.get("servings", 1)
+        diets = data.get('diets', '')
 
         # Ensure the recipe exists in the Recipe table
         recipe = Recipe.query.get(recipe_id)
@@ -277,7 +283,8 @@ def save_recipe():
                 instructions=instructions,
                 ingredients=json.dumps(ingredients),
                 ready_in_minutes=ready_in_minutes,
-                servings=servings
+                servings=servings,
+                diets=json.dumps(diets)
             )
             db.session.add(recipe)
 

@@ -227,7 +227,7 @@ def save_meal_plan():
                             source_url=recipe_data.get('sourceUrl', ''),
                             source_name=recipe_data.get('sourceName', ''),
                             summary=recipe_data.get('summary', ''),
-                            instructions=json.dumps(recipe_data.get('analyzedInstructions', [])),
+                            instructions=data.get("instructions"),
                             ingredients=json.dumps(recipe_data.get('extendedIngredients', [])),
                             ready_in_minutes=recipe_data.get('readyInMinutes', 0),
                             servings=recipe_data.get('servings', 1),

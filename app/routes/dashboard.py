@@ -150,6 +150,7 @@ def generate_meal_plan():
         apply_macros = meal in ("breakfast", "lunch", "dinner")
         rec = pick_from_batch(meal, apply_macros)
         if rec:
+            rec = spoon.get_recipe_information(rec['id'])
             meal_plan[meal] = [rec]
         else:
             meal_plan[meal] = {"error": f"No suitable {meal} found."}

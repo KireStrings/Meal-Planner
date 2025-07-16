@@ -1,5 +1,6 @@
-from flask import Blueprint, render_template, request, jsonify
+from flask import Blueprint, render_template, request, jsonify, current_app
 from flask_login import login_required
+from ..spoonacular import SpoonacularAPI
 import requests
 import random
 import os
@@ -12,18 +13,20 @@ dessert_drinks_page = Blueprint("dessert_drinks_page", __name__)
 @login_required
 def dessert_view():
     return render_template('dessert_drinks_page.html')
-# Spoonacular API key and base URL
-API_KEY = os.getenv("SPOONACULAR_API_KEY", "your-api-key-here")
-BASE_URL = "https://api.spoonacular.com/recipes/complexSearch"
+
+
+
 
 def fetch_recipes(recipe_type, number, max_calories):
+    api_key     = current_app.config['SPOONACULAR_API_KEY']
+    spoon       = SpoonacularAPI(api_key)
     attempt_limit = 5
     recipes = []
 
     for _ in range(attempt_limit):
         offset = random.randint(0, 50)
         params = {
-            "apiKey": API_KEY,
+            "apiKey": api_key,
             "number": number,
             "addRecipeInformation": True,
             "addRecipeInstructions": False,
@@ -34,9 +37,9 @@ def fetch_recipes(recipe_type, number, max_calories):
             "sort": "popularity"
         }
 
-        response = requests.get(BASE_URL, params=params)
-        if response.status_code == 200:
-            data = response.json()
+        resp = spoon.search_recipes_by_params(params)
+        if resp.status_code == 200:
+            data = resp.json()
             if data.get("results"):
                 recipes.extend(data["results"])
                 break

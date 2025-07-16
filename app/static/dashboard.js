@@ -1,7 +1,7 @@
 const macrosByDiet = {
   "Anything": { minCarbs: 90, minFat: 40, minProtein: 90 },
   "Keto": { minCarbs: 0, maxCarbs: 41, minFat: 120, minProtein: 68 },
-  "Mediterranean": { minCarbs: 45, minFat: 40, minProtein: 45 },
+  "Whole30": { minCarbs: 30, minFat: 20, minProtein: 40 },
   "Paleo": { minCarbs: 45, minFat: 40, minProtein: 45 },
   "Vegan": { minCarbs: 45, minFat: 40, minProtein: 45 },
   "Vegetarian": { minCarbs: 45, minFat: 40, minProtein: 45 }

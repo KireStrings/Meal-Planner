@@ -8,12 +8,12 @@ from ..spoonacular import SpoonacularAPI
 import pytz
 import json
 
+
 dashboard = Blueprint('dashboard', __name__)
 
 @dashboard.route('/dashboard', methods=['GET'])
 @login_required
 def dashboard_view():
-    # Just render the page; no meal_plan here
     return render_template('dashboard.html')
 
 def generate_recipe_hash(recipe):
@@ -23,173 +23,139 @@ def generate_recipe_hash(recipe):
 @dashboard.route('/generate', methods=['POST'])
 @login_required
 def generate_meal_plan():
-    api_key = current_app.config['SPOONACULAR_API_KEY']
-    spoonacular = SpoonacularAPI(api_key)
+    data        = request.get_json()
+    diet        = data.get('diet', '')
+    meals       = int(data.get('meals', 3))
+    total_cal   = int(data.get('calories', 2000))
+    min_carbs   = data.get('minCarbs', 0)
+    min_fat     = data.get('minFat', 0)
+    min_prot    = data.get('minProtein', 0)
+    max_carbs   = data.get('maxCarbs', None)
+    health_pref = data.get('healthPreference')
+    api_key     = current_app.config['SPOONACULAR_API_KEY']
+    spoon       = SpoonacularAPI(api_key)
 
-    if request.method == 'POST':
-        data = request.get_json()
+    # Optional reset
+    if data.get("forceNew"):
+        session["used_recipe_hashes"] = []
 
-        diet = data.get('diet', '')
-        meals = int(data.get('meals', 3))
-        total_calories = int(data.get('calories', 2000))
-        min_carbs = data.get('minCarbs', 0)
-        min_fat = data.get('minFat', 0)
-        min_protein = data.get('minProtein', 0)
-        max_carbs = data.get('maxCarbs', None)
-        health_pref = data.get("healthPreference")
+    def get_split_ratios():
+        if meals == 1:
+            return {"meal1": total_cal}
+        if meals == 2:
+            half = total_cal // 2
+            return {"meal1": half, "meal2": half}
+        if meals == 3:
+            per = int(total_cal * 0.3)
+            return {"breakfast": per, "lunch": per, "dinner": per}
+        if meals == 4:
+            return {
+                "breakfast": int(total_cal * 0.3),
+                "lunch":     int(total_cal * 0.4),
+                "snack1":    int(total_cal * 0.1),
+                "dinner":    int(total_cal * 0.2)
+            }
+        if meals == 5:
+            return {
+                "breakfast": int(total_cal * 0.2),
+                "lunch":     int(total_cal * 0.3),
+                "snack1":    int(total_cal * 0.1),
+                "snack2":    int(total_cal * 0.1),
+                "dinner":    int(total_cal * 0.2)
+            }
+        return {}
 
-        meal_plan = {}
+    splits = get_split_ratios()
+
+    batch_cache = {}
+    def fetch_batch(meal_type, cal):
+        if meal_type in batch_cache:
+            return batch_cache[meal_type]
+
+        def do_query(with_type):
+            params = {
+                "number": 50,
+                "addRecipeInformation": True,
+                "addRecipeNutrition": True,
+                "diet": "" if diet.lower() == "anything" else diet.lower(),
+                "minCalories": int(cal * 0.5),
+                "maxCalories": int(cal * 1.3),
+                "sort": "popularity",
+                "offset": random.randint(0, 50)
+            }
+            if with_type and meal_type in ("breakfast", "lunch", "dinner", "snack"):
+                params["type"] = meal_type
+            if max_carbs is not None:
+                params["maxCarbs"] = max_carbs
+
+            resp = spoon.search_recipes_by_params(params)
+            return resp.json().get("results", [])
+
+        batch = do_query(with_type=True)
+        if not batch:
+            print(f"[Fallback] No results for '{meal_type}' with type filter. Retrying without type...")
+            batch = do_query(with_type=False)
+
+        random.shuffle(batch)
+        batch_cache[meal_type] = batch
+
+        if meal_type == "breakfast":
+            print(f"Breakfast results (after shuffle): {[r.get('title') for r in batch]}")
+
+        return batch
+
+    def pick_from_batch(meal_type, apply_macros):
+        batch = fetch_batch(meal_type, splits.get(meal_type, 0))
+        best = None
+        best_score = float('inf') if health_pref == "noPreference" else -1
+        fallback = []
         used_hashes = set(session.get("used_recipe_hashes", []))
 
-        def get_split_ratios():
-            if meals == 1:
-                return {"meal1": total_calories}
-            elif meals == 2:
-                return {"meal1": total_calories // 2, "meal2": total_calories // 2}
-            elif meals == 3:
-                return {
-                    "breakfast": int(total_calories * 0.3),
-                    "lunch": int(total_calories * 0.3),
-                    "dinner": int(total_calories * 0.3)
-                }
-            elif meals == 4:
-                return {
-                    "breakfast": int(total_calories * 0.3),
-                    "lunch": int(total_calories * 0.3),
-                    "snack1": int(total_calories * 0.1),
-                    "dinner": int(total_calories * 0.2)
-                }
-            elif meals == 5:
-                return {
-                    "breakfast": int(total_calories * 0.3),
-                    "lunch": int(total_calories * 0.2),
-                    "snack1": int(total_calories * 0.1),
-                    "snack2": int(total_calories * 0.1),
-                    "dinner": int(total_calories * 0.2)
-                }
-            return {}
+        for rec in batch:
+            h = generate_recipe_hash(rec)
+            if h in used_hashes:
+                continue
 
-        def make_request(meal_type, cal, apply_macros):
-            min_cal = int(cal * 0.5)
-            max_cal = int(cal * 1.3)
-
-            best_recipe = None
-            fallback_candidates = []
-            best_score = float('inf') if health_pref == "noPreference" else -1
-
-            def build_params(offset=None):
-                base_macros = {
-                    "minCarbs": 20,
-                    "minFat": 10,
-                    "minProtein": 28
-                } if meal_type == "breakfast" else {
-                    "minCarbs": round(min_carbs / meals),
-                    "minFat": round(min_fat / meals),
-                    "minProtein": round(min_protein / meals)
-                }
-
-                base_offset = {"veryHealthy": 0, "mediumHealthy": 2, "noPreference": 1}.get(health_pref, 0)
-
-                params = {
-                    "number": 5,
-                    "addRecipeInformation": True,
-                    "addRecipeInstructions": False,
-                    "addRecipeNutrition": False,
-                    "diet": "" if diet.lower() == "anything" else diet.lower(),
-                    "minCalories": min_cal,
-                    "maxCalories": max_cal,
-                    "sort": "popularity",
-                    "type": meal_type if meal_type in ["breakfast", "lunch", "dinner", "snack"] else None,
-                    "offset": base_offset + random.randint(0, 50)
-                }
-
-                if max_carbs is not None:
-                    params["maxCarbs"] = max_carbs
-
-                return {k: v for k, v in params.items() if v is not None}, base_macros
-
-            for attempt in range(5):
-                params, base_macros = build_params()
-                response = spoonacular.search_recipes_by_params(params)
-                print("Attempt", attempt + 1, "URL:", response.url, "Status Code:", response.status_code)
-
-                if response.status_code != 200:
+            score = rec.get("healthScore", 0)
+            if apply_macros:
+                nutrients = {n["name"]: n["amount"] for n in rec["nutrition"]["nutrients"]}
+                prot_min = 28 if meal_type == "breakfast" else round(min_prot / meals)
+                if nutrients.get("Protein", 0) < prot_min:
                     continue
 
-                results = response.json().get("results", [])
-                random.shuffle(results)
+            if health_pref == "veryHealthy" and score < (45 if meal_type == "breakfast" else 64):
+                continue
+            elif health_pref == "mediumHealthy" and not (26 <= score <= 50):
+                continue
 
-                for recipe in results:
-                    recipe_hash = generate_recipe_hash(recipe)
-                    if recipe_hash in used_hashes:
-                        fallback_candidates.append(recipe)
-                        continue
-
-                    health_score = recipe.get("healthScore", 0)
-                    print("recipe:", recipe.get("title"), "health_Score:", health_score)
-
-                    if apply_macros:
-                        nutrients = {n["name"]: n["amount"] for n in recipe.get("nutrition", {}).get("nutrients", [])}
-                        if nutrients.get("Protein", 0) < base_macros["minProtein"]:
-                            continue
-                        if nutrients.get("Fat", 0) < base_macros["minFat"]:
-                            continue
-                        if nutrients.get("Carbohydrates", 0) < base_macros["minCarbs"]:
-                            continue
-                        if max_carbs is not None and nutrients.get("Carbohydrates", 0) > max_carbs:
-                            continue
-
-                    if health_pref == "veryHealthy":
-                        if meal_type == "breakfast" and health_score < 45:
-                            continue
-                        elif health_score < 64:
-                            continue
-                    elif health_pref == "mediumHealthy" and not (26 <= health_score <= 50):
-                        continue
-
-                    fallback_candidates.append(recipe)
-
-                    if health_pref == "noPreference":
-                        if health_score < best_score:
-                            best_score = health_score
-                            best_recipe = recipe
-                    else:
-                        if health_score > best_score:
-                            best_score = health_score
-                            best_recipe = recipe
-
-            if not best_recipe and fallback_candidates:
-                best_recipe = random.choice(fallback_candidates)
-
-            if best_recipe:
-                try:
-                    detailed_response = spoonacular.get_recipe_information(best_recipe['id'])
-                    if detailed_response.status_code == 200:
-                        best_recipe = detailed_response.json()
-                except Exception as e:
-                    print(f"Error getting detailed recipe info: {e}")
-                best_hash = generate_recipe_hash(best_recipe)
-                used_hashes.add(best_hash)
-                session["used_recipe_hashes"] = list(used_hashes)
-                return [best_recipe]
-
-            return []
-
-        split = get_split_ratios()
-
-        for meal, cal in split.items():
-            apply_macros = meal in ["breakfast", "lunch", "dinner"]
-            recipes = make_request(meal, cal, apply_macros)
-            if not recipes:
-                meal_plan[meal] = {
-                    "error": f"No suitable {meal} recipes found based on the selected health and macro preferences."
-                }
+            fallback.append(rec)
+            if health_pref == "noPreference":
+                if score < best_score:
+                    best_score, best = score, rec
             else:
-                meal_plan[meal] = recipes
+                if score > best_score:
+                    best_score, best = score, rec
 
-        print("Meal plan keys:", meal_plan.keys())
+        choice = best or (random.choice(fallback) if fallback else None)
+        if choice:
+            used_hashes.add(generate_recipe_hash(choice))
+            session["used_recipe_hashes"] = list(used_hashes)
+            if len(session["used_recipe_hashes"]) > 300:
+                session["used_recipe_hashes"] = session["used_recipe_hashes"][-150:]
+            return choice
+        return None
 
-        return jsonify(meal_plan)
+    meal_plan = {}
+    for meal, cal in splits.items():
+        apply_macros = meal in ("breakfast", "lunch", "dinner")
+        rec = pick_from_batch(meal, apply_macros)
+        if rec:
+            meal_plan[meal] = [rec]
+        else:
+            meal_plan[meal] = {"error": f"No suitable {meal} found."}
+
+    return jsonify(meal_plan)
+
 
 @dashboard.route('/save_plan', methods=['POST'])
 @login_required

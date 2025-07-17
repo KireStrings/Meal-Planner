@@ -239,6 +239,7 @@ def save_recipe():
         ingredients = data.get("ingredients", [])
         ready_in_minutes = data.get("readyInMinutes", 0)
         servings = data.get("servings", 1)
+        diets = data.get('diets', ''),
         calories=next(
             (n['amount'] for n in data.get('nutrition', {}).get('nutrients', [])
             if n.get('name') == 'Calories'), None
@@ -258,6 +259,7 @@ def save_recipe():
                 ingredients=json.dumps(ingredients),
                 ready_in_minutes=ready_in_minutes,
                 servings=servings,
+                diets=json.dumps(diets),
                 calories=calories
             )
             db.session.add(recipe)

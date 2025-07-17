@@ -150,7 +150,7 @@ def generate_meal_plan():
         apply_macros = meal in ("breakfast", "lunch", "dinner")
         rec = pick_from_batch(meal, apply_macros)
         if rec:
-            #rec = spoon.get_recipe_information(rec['id'])
+            rec = spoon.get_recipe_information(rec['id'])
             meal_plan[meal] = [rec]
         else:
             meal_plan[meal] = {"error": f"No suitable {meal} found."}
@@ -198,7 +198,11 @@ def save_meal_plan():
                             ingredients=json.dumps(recipe_data.get('extendedIngredients', [])),
                             ready_in_minutes=recipe_data.get('readyInMinutes', 0),
                             servings=recipe_data.get('servings', 1),
-                            diets=json.dumps(recipe_data.get('diets', ''))
+                            diets=json.dumps(recipe_data.get('diets', '')),
+                            calories=next(
+                                (n['amount'] for n in recipe_data.get('nutrition', {}).get('nutrients', [])
+                                if n.get('name') == 'Calories'), None
+                            )
                         )
                         db.session.add(recipe)
 
@@ -235,7 +239,10 @@ def save_recipe():
         ingredients = data.get("ingredients", [])
         ready_in_minutes = data.get("readyInMinutes", 0)
         servings = data.get("servings", 1)
-        diets = data.get('diets', '')
+        calories=next(
+            (n['amount'] for n in data.get('nutrition', {}).get('nutrients', [])
+            if n.get('name') == 'Calories'), None
+            )
 
         # Ensure the recipe exists in the Recipe table
         recipe = Recipe.query.get(recipe_id)
@@ -251,7 +258,7 @@ def save_recipe():
                 ingredients=json.dumps(ingredients),
                 ready_in_minutes=ready_in_minutes,
                 servings=servings,
-                diets=json.dumps(diets)
+                calories=calories
             )
             db.session.add(recipe)
 

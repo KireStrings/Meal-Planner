@@ -132,12 +132,15 @@ class SpoonacularAPI:
                 "sourceName": recipe.source_name,
                 "sourceUrl": recipe.source_url,
                 'diets': json.loads(recipe.diets),
+                "calories": recipe.calories,
                 "saved": saved
             }
 
         # If not, fetch from the API
         url = f"{self.BASE_URL}/recipes/{recipe_id}/information"
-        params = {"apiKey": self.api_key}
+        params = {
+            "apiKey": self.api_key,
+            "includeNutrition": "True"}
         response = requests.get(url, params=params)
         response.raise_for_status()
         data = response.json()
@@ -154,7 +157,11 @@ class SpoonacularAPI:
             image_url=data.get("image"),
             source_name=data.get("sourceName"),  # Store the source name
             source_url=data.get("sourceUrl"),  # Store the recipe URL
-            diets=json.dumps(data.get('diets'))
+            diets=json.dumps(data.get('diets')),
+            calories=next(
+                (n['amount'] for n in data.get('nutrition', {}).get('nutrients', [])
+                if n.get('name') == 'Calories'), None
+            )
         )
         db.session.add(new_recipe)
         db.session.commit()

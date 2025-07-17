@@ -35,6 +35,11 @@ class Recipe(db.Model):
     servings = db.Column(db.Integer, nullable=False)
     summary = db.Column(db.Text, nullable=True)
     instructions = db.Column(db.Text, nullable=True)
+    ingredients = db.Column(db.Text, nullable=False)
+    image_url = db.Column(db.String(500), nullable=True)
+    source_name = db.Column(db.String(255), nullable=True)
+    source_url = db.Column(db.String(500), nullable=True)
+    diets = db.Column(db.Text, nullable=False)
     calories = db.Column(db.Float)
 
     saved_by_assoc = db.relationship('UserSavedRecipe', backref='recipe', lazy='dynamic')

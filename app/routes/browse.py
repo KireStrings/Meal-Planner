@@ -1,6 +1,5 @@
 from flask import Blueprint, current_app, request, render_template
 from flask_login import login_required, current_user
-from .recipes import get_saved_recipes_for_user
 from ..spoonacular import SpoonacularAPI
 
 browse = Blueprint('browse', __name__)
@@ -50,6 +49,11 @@ def recipes():
         recipes = sorted(recipes, key=lambda r: r['title'].lower())
 
     return render_template('recipes.html', recipes=recipes, sort_by=sort_by)
+
+def get_saved_recipes_for_user(user_id):
+    api_key = current_app.config['SPOONACULAR_API_KEY']
+    spoonacular = SpoonacularAPI(api_key)
+    return spoonacular.get_saved_recipes(user_id)
 
 @browse.route('/recipe/<int:recipe_id>')
 @login_required

@@ -78,7 +78,7 @@ def generate_meal_plan():
                 "addRecipeInformation": True,
                 "addRecipeNutrition": True,
                 "diet": "" if diet.lower() == "anything" else diet.lower(),
-                "minCalories": int(cal * 0.5),
+                "minCalories": int(cal * 0.7),
                 "maxCalories": int(cal * 1.3),
                 "sort": "popularity",
                 "offset": random.randint(0, 50)

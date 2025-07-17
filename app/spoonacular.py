@@ -9,6 +9,15 @@ from . import db
 from .models import Recipe, Ingredient, UserSavedRecipe
 
 
+def getRecipeSourceUrl(data):
+    url = data.get("sourceUrl")
+    # if URL contains "spoonacular.com", external URL is missing
+    if not url or "spoonacular.com" in url:
+        # external URL missing, use the Spoonacular URL
+        url = data.get("spoonacularSourceUrl")
+    return url
+
+
 class SpoonacularAPI:
     BASE_URL = "https://api.spoonacular.com"
 
@@ -146,6 +155,11 @@ class SpoonacularAPI:
         response.raise_for_status()
         data = response.json()
 
+        # Get the source URL for the recipe
+        url = getRecipeSourceUrl(data)
+        # Ensure the correct URL is set in the data for initial template display
+        data["sourceUrl"] = url
+
         # Save the recipe to the database
         new_recipe = Recipe(
             id=data["id"],
@@ -157,7 +171,7 @@ class SpoonacularAPI:
             ingredients=json.dumps(data.get("extendedIngredients", [])),
             image_url=data.get("image"),
             source_name=data.get("sourceName"),  # Store the source name
-            source_url=data.get("sourceUrl"),  # Store the recipe URL
+            source_url=url,  # Store the recipe URL
             diets=json.dumps(data.get('diets')),
             calories=next(
                 (n['amount'] for n in data.get('nutrition', {}).get('nutrients', [])

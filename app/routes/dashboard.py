@@ -4,7 +4,7 @@ from flask_login import login_required, current_user
 from ..models import Recipe, db, MealPlan, UserSavedRecipe
 import random
 import hashlib
-from ..spoonacular import SpoonacularAPI
+from ..spoonacular import SpoonacularAPI, getRecipeSourceUrl
 import pytz
 import json
 
@@ -196,7 +196,7 @@ def save_meal_plan():
                             id=rid,
                             title=recipe_data.get('title', ''),
                             image_url=recipe_data.get('image', ''),
-                            source_url=recipe_data.get('sourceUrl', ''),
+                            source_url=getRecipeSourceUrl(recipe_data),
                             source_name=recipe_data.get('sourceName', ''),
                             summary=recipe_data.get('summary', ''),
                             instructions=data.get("instructions"),
@@ -237,7 +237,7 @@ def save_recipe():
         recipe_id = data["id"]
         title = data["title"]
         image_url = data.get("image") or data.get("image_url")
-        source_url = data.get("sourceUrl")
+        source_url = getRecipeSourceUrl(data)
         source_name = data.get("sourceName", "")
         summary = data.get("summary", "")
         instructions = data.get("instructions", "")

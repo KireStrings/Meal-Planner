@@ -16,7 +16,7 @@ def create_app():
     app.config['SECRET_KEY'] = 'super-secret-key'
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///spoonacular.db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['SPOONACULAR_API_KEY'] = os.getenv('SPOONACULAR_API_KEY', 'your-api-key-here')
+    app.config['SPOONACULAR_API_KEY'] = os.getenv('SPOONACULAR_API_KEY', 'd65505895cf24cd39da15e2fd418d800')
 
     db.init_app(app)
     migrate.init_app(app, db)

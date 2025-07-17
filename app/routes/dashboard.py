@@ -115,7 +115,7 @@ def generate_meal_plan():
             h = generate_recipe_hash(rec)
             if h in used_hashes:
                 continue
-
+            fallback.append(rec)
             score = rec.get("healthScore", 0)
             if apply_macros:
                 nutrients = {n["name"]: n["amount"] for n in rec["nutrition"]["nutrients"]}
@@ -123,12 +123,12 @@ def generate_meal_plan():
                 if nutrients.get("Protein", 0) < prot_min:
                     continue
 
-            if health_pref == "veryHealthy" and score < (45 if meal_type == "breakfast" else 64):
+            if health_pref == "veryHealthy" and score < (40 if meal_type == "breakfast" else 64):
                 continue
             elif health_pref == "mediumHealthy" and not (26 <= score <= 50):
                 continue
 
-            fallback.append(rec)
+            
             if health_pref == "noPreference":
                 if score < best_score:
                     best_score, best = score, rec
@@ -150,11 +150,11 @@ def generate_meal_plan():
         apply_macros = meal in ("breakfast", "lunch", "dinner")
         rec = pick_from_batch(meal, apply_macros)
         if rec:
-            rec = spoon.get_recipe_information(rec['id'])
+            #rec = spoon.get_recipe_information(rec['id'])
             meal_plan[meal] = [rec]
         else:
             meal_plan[meal] = {"error": f"No suitable {meal} found."}
-
+    print("meal_plan:", meal_plan)
     return jsonify(meal_plan)
 
 

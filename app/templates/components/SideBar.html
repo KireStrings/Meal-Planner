@@ -15,7 +15,7 @@
     </div>
 
     <div class="menu">
-        <a href="{{ url_for('main.dashboard') }}" class="menu-item {{ 'active' if current_page == 'main.dashboard' else '' }}">
+        <a href="{{ url_for('dashboard.dashboard_view') }}" class="menu-item {{ 'active' if current_page == 'dashboard.dashboard_view' else '' }}">
             {{ icon('home') }}
             <div class="menu-text">Meal Planner</div>
         </a>

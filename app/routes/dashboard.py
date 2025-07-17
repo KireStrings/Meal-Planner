@@ -1,5 +1,5 @@
 from datetime import datetime
-from flask import Blueprint, render_template, request, jsonify, session, current_app
+from flask import Blueprint, render_template, request, jsonify, session, current_app, redirect, url_for
 from flask_login import login_required, current_user
 from ..models import Recipe, db, MealPlan, UserSavedRecipe
 import random
@@ -11,10 +11,15 @@ import json
 
 dashboard = Blueprint('dashboard', __name__)
 
+@dashboard.route('/')
+@login_required
+def home():
+    return redirect(url_for('dashboard.dashboard_view'))
+
 @dashboard.route('/dashboard', methods=['GET'])
 @login_required
 def dashboard_view():
-    return render_template('dashboard.html')
+    return render_template('dashboard.html', user=current_user)
 
 def generate_recipe_hash(recipe):
     identifier = f"{recipe.get('id', '')}-{recipe.get('title', '')}"

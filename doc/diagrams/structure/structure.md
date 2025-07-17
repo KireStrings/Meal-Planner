@@ -1,93 +1,144 @@
 ```mermaid
+---
+config:
+  layout: elk
+  theme: redux
+  look: neo
+  htmlLabels: false
+  flowchart:
+    htmlLabels: false
+---
+
 graph TD
-    subgraph Static Files[Static Files - 'static/']
-        S1[CSS/JS]
-    end
 
-subgraph Templates[Templates - 'templates/']
-    T1[base.html]
-    T2[Sidebar Component]
-    T3[Popup Component]
-    T4[Favicon/Icon Macro]
+%% ───────────────────────────────────────────────
+%% STATIC FILES
+%% ───────────────────────────────────────────────
+subgraph Static["🧩 Static Files — 'static/'"]
+S1[📄 CSS / JS]
 end
 
-subgraph Page-Templates[Page-Templates - 'templates/']
-    P1[Dashboard/Meal Planner]
-    P3[Desserts & Drinks]
-    P4[Recipe Search]
-    P5[Saved Recipes]
-    P6[Recipe Details]
-    P7[My Meal Plan]
-    P8[Account]
-    P9[Login]
-    P10[Register]
+%% ───────────────────────────────────────────────
+%% COMPONENTS & MACROS
+%% ───────────────────────────────────────────────
+subgraph Components["🧱 Reusable Components — 'templates/component/'"]
+C1[Sidebar Component]
+C2[Popup Component]
 end
 
-subgraph Routing[Routing/Blueprints - 'routes/']
-    R1[main.py]
-    R2[dashboard.py]
-    R3[dessert_drinks_page.py]
-    R4[browse.py]
-    R5[recipes.py]
-    R6[meal_plan.py]
-    R7[auth.py]
-    R8[account.py]
+subgraph Macros["🔧 Macros — 'templates/macros/'"]
+M1[Favicon Macro]
+M2[Icon Macro]
 end
 
-subgraph Backend
-    B1[spoonacular.py]
+%% ───────────────────────────────────────────────
+%% TEMPLATES
+%% ───────────────────────────────────────────────
+subgraph Templates["📃 Templates — 'templates/'"]
+T1[📄 base.html]
+
+P2[🏠 Dashboard / Meal Planner]
+P3[🍰 Desserts & Drinks]
+P4[🔍 Recipe Search]
+P5[📌 Saved Recipes]
+P6[📖 Recipe Details]
+P7[📅 My Meal Plan]
+P8[👤 Account]
+
+subgraph AuthPages["🔐 Auth Pages"]
+P9[🔑 Login]
+P10[📝 Register]
+end
 end
 
-subgraph Data
-    D2[init_db.py]
-    D1[models.py]
-    D3[spoonacular.db]
+%% ───────────────────────────────────────────────
+%% ROUTES
+%% ───────────────────────────────────────────────
+subgraph Routing["🧭 Routing / Blueprints — 'routes/'"]
+R1[main.py]
+R2[dashboard.py]
+R6[meal_plan.py]
+R3[dessert_drinks_page.py]
+R4[browse.py]
+R7[auth.py]
+R8[account.py]
 end
 
-%% Routing Connections
-R1 --> P1
-R2 --> P1
+%% ───────────────────────────────────────────────
+%% BACKEND
+%% ───────────────────────────────────────────────
+subgraph Backend["🔗 Backend"]
+B1[spoonacular.py]
+B2[forms.py]
+end
 
-R3 --> P3
+%% ───────────────────────────────────────────────
+%% DATA LAYER
+%% ───────────────────────────────────────────────
+subgraph Data["💾 Data"]
+D1[models.py]
+D2[init_db.py]
+D3[(spoonacular.db)]
+end
 
-R4 --> P4 
-R4 --> P5 
-R4 --> P6
-R5 --- R4
+%% ───────────────────────────────────────────────
+%% Sponacular API
+%% ───────────────────────────────────────────────
+subgraph Spoonacular["🌐 Spoonacular"]
+A1[API]
+A2[(Database)]
+end
 
-R6 --> P7
+%% ───────────────────────────────────────────────
+%% RELATIONS
+%% ───────────────────────────────────────────────
 
-R7 --> P9
-R7 --> P10
-    
-R8 --> P8
+%% Routing to Pages
+R1 -->|routes to| P2
+R2 -->|routes to| P2
+R3 -->|routes to| P3
+R4 -->|routes to| P4 & P5 & P6
+R6 -->|routes to| P7
+R7 -->|routes to| P9 & P10
+R8 -->|routes to| P8
 
-Routing --> B1
+%% Page templates use base.html
+P2 & P3 & P4 & P5 & P6 & P7 & P8 -->|extends| T1
 
-%% Pages to base.html
-P1 --> T1
-P3 --> T1
-P4 --> T1
-P5 --> T1
-P6 --> T1
-P8 --> T1
-P9 --> T1
-P10 --> T1
+%% base.html includes components and macros
+T1 -->|includes| Components
+T1 -->|uses| Macros
 
-%% Templates to Macros/Components
-T1 --> T2
-T1 --> T3
-T1 --> T4
+%% Auth pages use components and macros directly
+AuthPages -->|includes| C2
+AuthPages -->|uses| Macros
 
-%% Templates to Static Files
-Templates --> S1
-Page-Templates --> S1
+%% Static use
+Templates & Components & Macros -->|uses| Static
 
-%% DB Initialization and Models
-D1 --> D3
-D2 --> D3
+%% Routing and Backend depend on DB
+Routing -->|uses| B2
+B1 & Routing -->|queries| D3
+D1 -->|defines| D3
+D2 -->|initializes| D3
 
-%% Backend & Routes to DB
-Backend --> D3
-Routing --> D3
+%% Backend Access
+Routing -->|calls| B1
+
+%% API-Access
+A1 -->|queries| A2
+B1 -->|queries| A1
+
+%% Stylized borders
+style Spoonacular stroke-dasharray: 5 5
+classDef routing stroke:#3396ff;
+class Routing routing
+classDef backend stroke:#6e33ff;
+class Backend backend
+class Data backend
+classDef frontend stroke:#009e07;
+class Templates frontend
+class Components frontend
+class Macros frontend
+class Static frontend
 ```

@@ -78,19 +78,13 @@ document.addEventListener("DOMContentLoaded", function () {
           <div class="meal-item">
             <img src="${r.image}" alt="${r.title}">
             <div>
-              <a href="${r.sourceUrl}" target="_blank" rel="noopener noreferrer">${r.title}</a><br>
+              <a href="/recipe/${r.id}">${r.title}</a><br>
               <span>1 serving</span><br>
-              <button class="btn btn-sm btn-outline-primary save-recipe-btn" data-recipe='${JSON.stringify({
-                id: r.id,
-                title: r.title,
-                image: r.image,
-                sourceUrl: r.sourceUrl,
-                nutrition: r.nutrition || null
-              }).replace(/'/g, "&apos;")}'>💾 Save</button>
             </div>
           </div>
         `;
       });
+
 
       return section;
     };

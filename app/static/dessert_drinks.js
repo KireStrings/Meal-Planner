@@ -33,7 +33,7 @@ document.getElementById("generateExtras").addEventListener("click", async () => 
             <div class="result-item">
             <img src="${recipe.image}" alt="${recipe.title}">
             <div>
-                <a href="${recipe.sourceUrl}" target="_blank">${recipe.title}</a><br>
+                <a href="/recipe/${recipe.id}">${recipe.title}</a><br>
                 <span>Calories: ${Math.round(
                 recipe.nutrition?.nutrients?.find(n => n.name === "Calories")?.amount || 0
                 )}</span>

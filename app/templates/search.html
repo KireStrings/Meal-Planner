@@ -71,7 +71,8 @@
                 {% for recipe in recipes %}
                     <a class="card" href="{{ url_for('browse.recipe_details', recipe_id=recipe.id) }}">
                         <h3>{{ recipe.title }}</h3>
-                        <img src="{{ recipe.image }}" alt="{{ recipe.title }}">
+                        <img src="{{ recipe.image }}" alt="{{ recipe.title }}"
+                             onerror="this.onerror=null;this.src='{{ url_for('static', filename='img/spoon-investigation.png') }}';">
                         {% if recipe.readyInMinutes %}
                             <p>Ready in {{ recipe.readyInMinutes }} min</p>
                         {% endif %}

@@ -1,7 +1,7 @@
 from datetime import datetime
 from flask import Blueprint, render_template, request, jsonify, session, current_app, redirect, url_for
 from flask_login import login_required, current_user
-from ..models import Recipe, db, MealPlan, UserSavedRecipe
+from ..models import Recipe, db, MealPlan, UserSavedRecipe, mealplan_recipe
 import random
 import hashlib
 from ..spoonacular import SpoonacularAPI, getRecipeSourceUrl
@@ -223,6 +223,40 @@ def save_meal_plan():
         db.session.rollback()
         current_app.logger.error(f"Error saving meal plan: {str(e)}")
         return jsonify({'error': f'Failed to save meal plan: {str(e)}'}), 500
+    
+@dashboard.route('/unsave_plan/<int:plan_id>', methods=['DELETE'])
+@login_required
+def unsave_meal_plan(plan_id):
+    try:
+        # Find the meal plan by ID
+        meal_plan = MealPlan.query.get(plan_id)
+
+        if not meal_plan:
+            return jsonify({'error': 'Meal plan not found'}), 404
+
+        # Ensure the current user owns this plan
+        if meal_plan not in current_user.meal_plans:
+            return jsonify({'error': 'You do not have permission to delete this meal plan'}), 403
+
+        # Remove the association between the user and the meal plan
+        current_user.meal_plans.remove(meal_plan)
+
+        # If no other users are associated, delete the plan and its recipe links
+        if meal_plan.users.count() == 0:
+            # Remove all recipe associations manually
+            for recipe in meal_plan.recipes.all():
+                meal_plan.recipes.remove(recipe)
+
+            # Delete the meal plan itself
+            db.session.delete(meal_plan)
+
+        db.session.commit()
+        return jsonify({'message': 'Meal plan unsaved successfully'}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        current_app.logger.error(f"Error unsaving meal plan: {str(e)}")
+        return jsonify({'error': f'Failed to unsave meal plan: {str(e)}'}), 500
 
 
 @dashboard.route("/save_recipe", methods=["POST"])

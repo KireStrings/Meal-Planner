@@ -45,3 +45,34 @@ def unsave_meal_plan(plan_id):
         current_app.logger.error(f"Error unsaving meal plan: {str(e)}")
         return jsonify({'error': f'Failed to unsave meal plan: {str(e)}'}), 500
     
+@meal_plan.route('/rename_plan/<int:plan_id>', methods=['POST'])
+@login_required
+def rename_meal_plan(plan_id):
+    try:
+        # Find the meal plan by ID
+        meal_plan = MealPlan.query.get(plan_id)
+
+        if not meal_plan:
+            return jsonify({'error': 'Meal plan not found'}), 404
+
+        # Ensure the current user owns this plan
+        if meal_plan not in current_user.meal_plans:
+            return jsonify({'error': 'You do not have permission to rename this meal plan'}), 403
+
+        # Get new title from request
+        data = request.get_json()
+        new_title = data.get('title', '').strip()
+
+        if not new_title:
+            return jsonify({'error': 'New title is required'}), 400
+
+        # Update and commit
+        meal_plan.title = new_title
+        db.session.commit()
+
+        return jsonify({'message': 'Meal plan renamed successfully', 'new_title': new_title}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        current_app.logger.error(f"Error renaming meal plan: {str(e)}")
+        return jsonify({'error': f'Failed to rename meal plan: {str(e)}'}), 500

@@ -7,10 +7,15 @@
   {% for plan in meal_plans %}
     <div class="card mb-3">
       <div class="card-header d-flex justify-content-between align-items-center">
-        <span>{{ plan.title }}</span>
+        <span class="mealplan-title">{{ plan.title }}</span>
         <div class="btn-group" role="group">
           <button class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#recipes-{{ plan.id }}">
             View Recipes
+          </button>
+          <button class="btn btn-sm btn-outline-secondary rename-plan-btn"
+                  data-plan-id="{{ plan.id }}"
+                  data-plan-title="{{ plan.title }}">
+            ✏️ Rename
           </button>
           <button class="btn btn-sm btn-outline-danger remove-plan-btn"
                   data-plan-id="{{ plan.id }}"
@@ -50,9 +55,10 @@
   {% else %}
     <p>You have no meal plans yet.</p>
   {% endfor %}
-  {% block scripts %}
-  <script src="{{ url_for('static', filename='meal_plan.js') }}"></script>
-  {% endblock %}
 </div>
+{% block scripts %}
+  <script src="{{ url_for('static', filename='meal_plan.js') }}"></script>
+{% endblock %}
 
 {% endblock %}
+
